@@ -12,22 +12,26 @@ export default function AppList({ whitelist, onSave }: AppListProps) {
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
 
+  const HIDDEN_PACKAGES = [
+    'com.katze.app',
+    'com.android.settings',
+    'com.samsung.android.app.settings',
+  ]
+
   useEffect(() => {
     KatzePlugin.getInstalledApps()
       .then(({ apps }) => {
-        setApps(apps.sort((a, b) => a.appName.localeCompare(b.appName)))
+        const visible = apps.filter((a) => !HIDDEN_PACKAGES.includes(a.packageName))
+        setApps(visible.sort((a, b) => a.appName.localeCompare(b.appName)))
       })
       .finally(() => setLoading(false))
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const filtered = apps.filter((app) =>
     app.appName.toLowerCase().includes(search.toLowerCase()),
   )
 
   function toggleApp(packageName: string) {
-    const isKatze = packageName === 'com.katze.app'
-    if (isKatze) return
-
     const updated = whitelist.includes(packageName)
       ? whitelist.filter((p) => p !== packageName)
       : [...whitelist, packageName]
@@ -58,15 +62,13 @@ export default function AppList({ whitelist, onSave }: AppListProps) {
 
       <div className="space-y-1">
         {filtered.map((app) => {
-          const isKatze = app.packageName === 'com.katze.app'
-          const isWhitelisted = isKatze || whitelist.includes(app.packageName)
+          const isWhitelisted = whitelist.includes(app.packageName)
 
           return (
             <button
               key={app.packageName}
               onClick={() => toggleApp(app.packageName)}
-              disabled={isKatze}
-              className="w-full flex items-center gap-3 p-3 rounded-xl transition-colors active:bg-surface-lighter disabled:opacity-60"
+              className="w-full flex items-center gap-3 p-3 rounded-xl transition-colors active:bg-surface-lighter"
             >
               {app.icon ? (
                 <img
@@ -81,12 +83,7 @@ export default function AppList({ whitelist, onSave }: AppListProps) {
               )}
 
               <div className="flex-1 text-left">
-                <p className="text-sm font-medium">
-                  {app.appName}
-                  {isKatze && (
-                    <span className="ml-2 text-xs text-primary-500">Always allowed</span>
-                  )}
-                </p>
+                <p className="text-sm font-medium">{app.appName}</p>
                 <p className="text-xs text-gray-600">{app.packageName}</p>
               </div>
 

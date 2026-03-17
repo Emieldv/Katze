@@ -90,8 +90,10 @@ public class KatzePlugin extends Plugin {
                 // ignore
             }
         }
-        // Always whitelist system launcher and Katze
+        // Always whitelist Katze and Settings
         whitelist.add("com.katze.app");
+        whitelist.add("com.android.settings");
+        whitelist.add("com.samsung.android.app.settings");
         editor.putStringSet(KEY_WHITELIST, whitelist);
         editor.apply();
 

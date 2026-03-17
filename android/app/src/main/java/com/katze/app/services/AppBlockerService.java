@@ -44,17 +44,51 @@ public class AppBlockerService extends AccessibilityService {
         Set<String> whitelist = prefs.getStringSet(KEY_WHITELIST, null);
         if (whitelist != null && whitelist.contains(packageName)) return;
 
-        // Allow system UI packages through (notification shade, system dialogs, etc.)
-        if (packageName.equals("com.android.systemui") ||
-                packageName.equals("com.android.launcher") ||
-                packageName.equals("com.android.launcher3") ||
-                packageName.equals("com.google.android.apps.nexuslauncher") ||
-                packageName.startsWith("com.android.launcher")) {
+        // Allow system-critical packages through
+        if (isSystemPackage(packageName)) {
             return;
         }
 
         // Send user to home screen
         performGlobalAction(GLOBAL_ACTION_HOME);
+    }
+
+    private boolean isSystemPackage(String packageName) {
+        // System UI: notification shade, quick settings, status bar
+        if (packageName.equals("com.android.systemui")) return true;
+
+        // Launchers / home screen
+        if (packageName.startsWith("com.android.launcher")) return true;
+        if (packageName.equals("com.google.android.apps.nexuslauncher")) return true;
+        if (packageName.equals("com.sec.android.app.launcher")) return true;
+        if (packageName.equals("com.miui.home")) return true;
+        if (packageName.equals("com.huawei.android.launcher")) return true;
+        if (packageName.equals("com.oppo.launcher")) return true;
+        if (packageName.equals("com.oneplus.launcher")) return true;
+
+        // Settings
+        if (packageName.equals("com.android.settings")) return true;
+        if (packageName.equals("com.samsung.android.app.settings")) return true;
+
+        // Recent apps / overview
+        if (packageName.equals("com.android.quickstep")) return true;
+        if (packageName.equals("com.google.android.apps.nexuslauncher")) return true;
+
+        // System dialogs, permissions, package installer
+        if (packageName.equals("android")) return true;
+        if (packageName.equals("com.android.packageinstaller")) return true;
+        if (packageName.equals("com.google.android.packageinstaller")) return true;
+        if (packageName.equals("com.android.permissioncontroller")) return true;
+
+        // Keyboard / input
+        if (packageName.equals("com.google.android.inputmethod.latin")) return true;
+        if (packageName.equals("com.samsung.android.honeyboard")) return true;
+        if (packageName.equals("com.android.inputmethod.latin")) return true;
+
+        // Katze itself
+        if (packageName.equals("com.katze.app")) return true;
+
+        return false;
     }
 
     @Override
