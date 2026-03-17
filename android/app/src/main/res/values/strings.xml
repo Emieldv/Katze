@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Katze</string>
+    <string name="title_activity_main">Katze</string>
+    <string name="package_name">com.katze.app</string>
+    <string name="custom_url_scheme">com.katze.app</string>
+    <string name="accessibility_service_label">Katze App Blocker</string>
+    <string name="accessibility_service_description">Katze uses this service to block apps when lock mode is active. It monitors which app is in the foreground and redirects to the home screen if the app is not whitelisted.</string>
+</resources>
