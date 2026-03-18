@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+concurrency:
+  group: code-quality-${{ github.head_ref }}
+  cancel-in-progress: true
+
 jobs:
   check:
     runs-on: ubuntu-latest
