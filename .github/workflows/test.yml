@@ -1,4 +1,4 @@
-name: Code Quality
+name: Tests
 
 on:
   pull_request:
@@ -6,11 +6,11 @@ on:
       - main
 
 concurrency:
-  group: code-quality-${{ github.head_ref }}
+  group: test-${{ github.head_ref }}
   cancel-in-progress: true
 
 jobs:
-  check:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,12 +20,6 @@ jobs:
           node-version: 22
           cache: npm
 
-      - uses: biomejs/setup-biome@v2
-
       - run: npm ci
 
-      - name: Lint & format
-        run: biome check .
-
-      - name: Typecheck & build
-        run: npm run build
+      - run: npm test
