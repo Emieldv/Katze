@@ -2,6 +2,7 @@ package com.katze.app.services;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
+import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -33,16 +34,17 @@ public class AppBlockerService extends AccessibilityService {
         launcherPackages = detectLauncherPackages();
         Log.d("KatzeBlocker", "Accessibility service connected");
         AccessibilityServiceInfo info = new AccessibilityServiceInfo();
-        info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
+        info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+                | AccessibilityEvent.TYPE_WINDOWS_CHANGED;
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
-        info.notificationTimeout = 100;
-        info.flags = AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS;
+        info.notificationTimeout = 0;
         setServiceInfo(info);
     }
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (event.getEventType() != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+        if (event.getEventType() != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+                && event.getEventType() != AccessibilityEvent.TYPE_WINDOWS_CHANGED) {
             return;
         }
 
@@ -69,9 +71,14 @@ public class AppBlockerService extends AccessibilityService {
             return;
         }
 
-        // Send user to home screen
         Log.d("KatzeBlocker", "Blocking: " + packageName);
         performGlobalAction(GLOBAL_ACTION_HOME);
+
+        // Kill the background process to remove it from recents
+        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        if (am != null) {
+            am.killBackgroundProcesses(packageName);
+        }
     }
 
     private boolean isSystemPackage(String packageName) {
