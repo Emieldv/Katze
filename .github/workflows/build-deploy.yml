@@ -49,7 +49,7 @@ jobs:
           bundler-cache: true
           working-directory: android
 
-      - run: npm ci
+      - run: npm ci --include=optional
 
       - run: npm run build
 
