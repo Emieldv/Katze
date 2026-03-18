@@ -2,6 +2,13 @@ import { useEffect, useRef, useState } from 'react'
 import KatzePlugin from '../plugins/KatzePlugin'
 import type { PluginListenerHandle } from '@capacitor/core'
 
+// Module-level flag so the global NFC listener in App.tsx can
+// skip handling when a local scan (e.g. adding a card) is active.
+let activeScanCount = 0
+export function isNfcScanActive() {
+  return activeScanCount > 0
+}
+
 interface UseNfcOptions {
   onTagDetected: (uid: string) => void
 }
@@ -20,6 +27,7 @@ export function useNfc({ onTagDetected }: UseNfcOptions) {
     })
 
     await KatzePlugin.startNfcScan()
+    activeScanCount++
     setScanning(true)
   }
 
@@ -29,6 +37,7 @@ export function useNfc({ onTagDetected }: UseNfcOptions) {
     await KatzePlugin.stopNfcScan()
     listenerRef.current?.remove()
     listenerRef.current = null
+    activeScanCount = Math.max(0, activeScanCount - 1)
     setScanning(false)
   }
 
@@ -37,6 +46,7 @@ export function useNfc({ onTagDetected }: UseNfcOptions) {
       if (listenerRef.current) {
         KatzePlugin.stopNfcScan()
         listenerRef.current.remove()
+        activeScanCount = Math.max(0, activeScanCount - 1)
       }
     }
   }, [])

@@ -2,6 +2,7 @@ import { useEffect, useCallback, useRef } from 'react'
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
 import { useStorage } from './hooks/useStorage'
 import { useAppBlocker } from './hooks/useAppBlocker'
+import { isNfcScanActive } from './hooks/useNfc'
 import KatzePlugin from './plugins/KatzePlugin'
 import Setup from './pages/Setup'
 import Home from './pages/Home'
@@ -32,6 +33,9 @@ function AppRoutes() {
     if (!storageRef.current.setupComplete) return
 
     const listener = KatzePlugin.addListener('nfcTagDetected', async (event) => {
+      // Skip global handler when a local scan (e.g. adding a card) is active
+      if (isNfcScanActive()) return
+
       await handleNfcToggle(event.uid)
 
       if (location.pathname !== '/') {
