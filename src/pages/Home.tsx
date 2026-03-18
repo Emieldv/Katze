@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useNfc } from '../hooks/useNfc'
 import { useAppBlocker } from '../hooks/useAppBlocker'
+import SafeArea from '../components/SafeArea'
 import type { useStorage } from '../hooks/useStorage'
 
 type HomeProps = {
@@ -10,30 +11,47 @@ type HomeProps = {
 
 export default function Home({ storage }: HomeProps) {
   const navigate = useNavigate()
-  const { setLockState } = useAppBlocker()
+  const { setLockState, checkAccessibility, openAccessibilitySettings, accessibilityEnabled } = useAppBlocker()
   const [showOverride, setShowOverride] = useState(false)
   const [overrideInput, setOverrideInput] = useState('')
   const [overrideError, setOverrideError] = useState('')
   const [remainingTime, setRemainingTime] = useState<string | null>(null)
+  const [nfcError, setNfcError] = useState<string | null>(null)
+
+  // Poll accessibility service status
+  useEffect(() => {
+    checkAccessibility()
+    const interval = setInterval(() => {
+      checkAccessibility()
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [checkAccessibility])
 
   const toggleLock = useCallback(async () => {
     const newState = !storage.locked
+    console.log('[Katze] toggleLock:', newState, 'whitelist:', storage.whitelist)
     await storage.saveLockState(newState)
     await setLockState(newState, storage.whitelist)
   }, [storage, setLockState])
 
   const { startScan } = useNfc({
     onTagDetected: (uid) => {
+      console.log('[Katze] NFC tag detected:', uid)
       const isRegistered = storage.nfcCards.some((c) => c.uid === uid)
       if (isRegistered) {
         toggleLock()
+      } else {
+        console.log('[Katze] NFC tag not registered')
       }
     },
   })
 
   // Start NFC scanning when component mounts
   useEffect(() => {
-    startScan()
+    startScan().catch((err) => {
+      console.error('[Katze] NFC scan failed:', err)
+      setNfcError(String(err))
+    })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Timer: auto-unlock after configured duration
@@ -84,7 +102,7 @@ export default function Home({ storage }: HomeProps) {
   }
 
   return (
-    <div className="min-h-dvh p-6 flex flex-col">
+    <SafeArea className="px-6">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-bold text-primary-400">Katze</h1>
         <button
@@ -95,6 +113,26 @@ export default function Home({ storage }: HomeProps) {
           Settings
         </button>
       </div>
+
+      {accessibilityEnabled === false && (
+        <div className="bg-red-950 border border-red-800 rounded-xl p-4 mb-6">
+          <p className="text-sm text-red-300 mb-2">
+            Accessibility service is not enabled. App blocking will not work.
+          </p>
+          <button
+            onClick={openAccessibilitySettings}
+            className="text-sm font-semibold text-red-400 underline"
+          >
+            Open Accessibility Settings
+          </button>
+        </div>
+      )}
+
+      {nfcError && (
+        <div className="bg-yellow-950 border border-yellow-800 rounded-xl p-4 mb-6">
+          <p className="text-sm text-yellow-300">NFC error: {nfcError}</p>
+        </div>
+      )}
 
       <div className="flex-1 flex flex-col items-center justify-center">
         <div
@@ -180,6 +218,6 @@ export default function Home({ storage }: HomeProps) {
           </button>
         </div>
       )}
-    </div>
+    </SafeArea>
   )
 }

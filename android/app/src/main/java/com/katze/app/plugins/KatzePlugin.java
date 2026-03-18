@@ -22,6 +22,8 @@ import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 
+import android.util.Log;
+
 import java.io.ByteArrayOutputStream;
 import java.util.HashSet;
 import java.util.List;
@@ -51,6 +53,11 @@ public class KatzePlugin extends Plugin {
             // Only include user-visible apps (apps with a launcher intent)
             Intent launchIntent = pm.getLaunchIntentForPackage(appInfo.packageName);
             if (launchIntent == null) continue;
+
+            // Hide pure system apps (keep updated system apps like Chrome, Gmail, etc.)
+            boolean isSystem = (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
+            boolean isUpdated = (appInfo.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0;
+            if (isSystem && !isUpdated) continue;
 
             JSObject app = new JSObject();
             app.put("packageName", appInfo.packageName);
@@ -96,6 +103,8 @@ public class KatzePlugin extends Plugin {
         whitelist.add("com.samsung.android.app.settings");
         editor.putStringSet(KEY_WHITELIST, whitelist);
         editor.apply();
+
+        Log.d("KatzeBlocker", "setLockState: locked=" + locked + " whitelist=" + whitelist);
 
         call.resolve();
     }

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { useStorage } from '../hooks/useStorage'
+import SafeArea from '../components/SafeArea'
 import AppList from '../components/AppList'
 import NfcCardManager from '../components/NfcCardManager'
 import TimerSettings from '../components/TimerSettings'
@@ -22,8 +23,8 @@ export default function Settings({ storage }: SettingsProps) {
   ]
 
   return (
-    <div className="min-h-dvh flex flex-col">
-      <div className="p-6 pb-0">
+    <SafeArea>
+      <div className="px-6">
         <div className="flex items-center gap-3 mb-6">
           <button
             onClick={() => navigate('/')}
@@ -51,7 +52,7 @@ export default function Settings({ storage }: SettingsProps) {
         </div>
       </div>
 
-      <div className="flex-1 px-6 pb-6 overflow-y-auto">
+      <div className="flex-1 px-6 pb-2 overflow-y-auto">
         {activeTab === 'whitelist' && (
           <AppList
             whitelist={storage.whitelist}
@@ -71,6 +72,6 @@ export default function Settings({ storage }: SettingsProps) {
           />
         )}
       </div>
-    </div>
+    </SafeArea>
   )
 }

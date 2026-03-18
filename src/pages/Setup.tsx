@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useNfc } from '../hooks/useNfc'
 import { useAppBlocker } from '../hooks/useAppBlocker'
+import SafeArea from '../components/SafeArea'
 import type { useStorage } from '../hooks/useStorage'
 import type { NfcCard } from '../types'
 
@@ -17,7 +18,29 @@ export default function Setup({ storage }: SetupProps) {
   const [codeConfirmed, setCodeConfirmed] = useState(false)
   const [pendingCards, setPendingCards] = useState<NfcCard[]>([])
   const [nfcStatus, setNfcStatus] = useState('')
+  const [pendingUid, setPendingUid] = useState<string | null>(null)
+  const [cardName, setCardName] = useState('')
   const { checkAccessibility, openAccessibilitySettings } = useAppBlocker()
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  // Poll accessibility status when on that step
+  useEffect(() => {
+    if (step !== 'accessibility') {
+      if (pollRef.current) clearInterval(pollRef.current)
+      return
+    }
+
+    pollRef.current = setInterval(async () => {
+      const enabled = await checkAccessibility()
+      if (enabled) {
+        setStep('nfc')
+      }
+    }, 1500)
+
+    return () => {
+      if (pollRef.current) clearInterval(pollRef.current)
+    }
+  }, [step, checkAccessibility])
 
   const { scanning, startScan, stopScan } = useNfc({
     onTagDetected: (uid) => {
@@ -26,20 +49,27 @@ export default function Setup({ storage }: SetupProps) {
         return
       }
 
-      const card: NfcCard = {
-        uid,
-        name: `Card ${pendingCards.length + 1}`,
-        registeredAt: new Date().toISOString(),
-      }
-      const updated = [...pendingCards, card]
-      setPendingCards(updated)
-      setNfcStatus(`Card registered! (${updated.length}/2)`)
-
-      if (updated.length >= 2) {
-        stopScan()
-      }
+      stopScan()
+      setPendingUid(uid)
+      setCardName('')
+      setNfcStatus('')
     },
   })
+
+  function confirmCardName() {
+    if (!pendingUid || !cardName.trim()) return
+
+    const card: NfcCard = {
+      uid: pendingUid,
+      name: cardName.trim(),
+      registeredAt: new Date().toISOString(),
+    }
+    const updated = [...pendingCards, card]
+    setPendingCards(updated)
+    setPendingUid(null)
+    setCardName('')
+    setNfcStatus(`Card registered! (${updated.length}/2)`)
+  }
 
   async function handleFinishSetup() {
     await storage.saveNfcCards(pendingCards)
@@ -48,15 +78,8 @@ export default function Setup({ storage }: SetupProps) {
     navigate('/', { replace: true })
   }
 
-  async function handleCheckAccessibility() {
-    const enabled = await checkAccessibility()
-    if (enabled) {
-      setStep('nfc')
-    }
-  }
-
   return (
-    <div className="min-h-dvh p-6 flex flex-col">
+    <SafeArea className="px-6">
       <h1 className="text-2xl font-bold text-primary-400 mb-2">Katze Setup</h1>
       <p className="text-sm text-gray-400 mb-8">
         Step {step === 'code' ? '1/3' : step === 'accessibility' ? '2/3' : '3/3'}
@@ -103,7 +126,7 @@ export default function Setup({ storage }: SetupProps) {
             <h2 className="text-lg font-semibold mb-2">Accessibility Service</h2>
             <p className="text-sm text-gray-400 mb-4">
               Katze needs the Accessibility Service to block apps. Enable it in your
-              device settings.
+              device settings — this page will advance automatically once detected.
             </p>
             <button
               onClick={openAccessibilitySettings}
@@ -113,12 +136,10 @@ export default function Setup({ storage }: SetupProps) {
             </button>
           </div>
 
-          <button
-            onClick={handleCheckAccessibility}
-            className="mt-auto w-full py-4 rounded-xl font-semibold text-white bg-primary-600 active:bg-primary-700 transition-colors"
-          >
-            I've enabled it — Continue
-          </button>
+          <div className="mt-auto flex items-center justify-center gap-3 py-4">
+            <div className="w-5 h-5 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
+            <p className="text-sm text-gray-400">Waiting for accessibility service...</p>
+          </div>
         </div>
       )}
 
@@ -145,7 +166,27 @@ export default function Setup({ storage }: SetupProps) {
               </div>
             ))}
 
-            {pendingCards.length < 2 && (
+            {pendingUid ? (
+              <div className="bg-surface rounded-xl p-4 mt-2">
+                <p className="text-sm text-gray-400 mb-2">Card detected! Give it a name:</p>
+                <input
+                  type="text"
+                  value={cardName}
+                  onChange={(e) => setCardName(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && confirmCardName()}
+                  placeholder="e.g. Desk card, Keychain tag"
+                  className="w-full bg-surface-light rounded-lg px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:ring-1 focus:ring-primary-700 mb-3"
+                  autoFocus
+                />
+                <button
+                  onClick={confirmCardName}
+                  disabled={!cardName.trim()}
+                  className="w-full py-3 rounded-xl font-semibold text-sm text-white bg-primary-600 disabled:opacity-30 disabled:cursor-not-allowed active:bg-primary-700 transition-colors"
+                >
+                  Save Card
+                </button>
+              </div>
+            ) : pendingCards.length < 2 ? (
               <>
                 {!scanning ? (
                   <button
@@ -161,7 +202,7 @@ export default function Setup({ storage }: SetupProps) {
                   </div>
                 )}
               </>
-            )}
+            ) : null}
 
             {nfcStatus && (
               <p className="text-sm text-primary-400 mt-2 text-center">{nfcStatus}</p>
@@ -177,6 +218,6 @@ export default function Setup({ storage }: SetupProps) {
           </button>
         </div>
       )}
-    </div>
+    </SafeArea>
   )
 }

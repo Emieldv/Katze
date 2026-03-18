@@ -11,6 +11,8 @@ export default function NfcCardManager({ cards, onSave }: NfcCardManagerProps) {
   const [editingName, setEditingName] = useState<string | null>(null)
   const [nameInput, setNameInput] = useState('')
   const [addStatus, setAddStatus] = useState('')
+  const [pendingUid, setPendingUid] = useState<string | null>(null)
+  const [newCardName, setNewCardName] = useState('')
 
   const { scanning, startScan, stopScan } = useNfc({
     onTagDetected: (uid) => {
@@ -19,16 +21,31 @@ export default function NfcCardManager({ cards, onSave }: NfcCardManagerProps) {
         return
       }
 
-      const card: NfcCard = {
-        uid,
-        name: `Card ${cards.length + 1}`,
-        registeredAt: new Date().toISOString(),
-      }
-      onSave([...cards, card])
-      setAddStatus('Card added!')
       stopScan()
+      setPendingUid(uid)
+      setNewCardName('')
+      setAddStatus('')
     },
   })
+
+  function confirmNewCard() {
+    if (!pendingUid || !newCardName.trim()) return
+
+    const card: NfcCard = {
+      uid: pendingUid,
+      name: newCardName.trim(),
+      registeredAt: new Date().toISOString(),
+    }
+    onSave([...cards, card])
+    setPendingUid(null)
+    setNewCardName('')
+    setAddStatus('Card added!')
+  }
+
+  function cancelNewCard() {
+    setPendingUid(null)
+    setNewCardName('')
+  }
 
   function removeCard(uid: string) {
     if (cards.length <= 2) {
@@ -115,7 +132,35 @@ export default function NfcCardManager({ cards, onSave }: NfcCardManagerProps) {
         ))}
       </div>
 
-      {!scanning ? (
+      {pendingUid ? (
+        <div className="bg-surface-light rounded-xl p-4">
+          <p className="text-sm text-gray-400 mb-2">Card detected! Give it a name:</p>
+          <input
+            type="text"
+            value={newCardName}
+            onChange={(e) => setNewCardName(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && confirmNewCard()}
+            placeholder="e.g. Desk card, Keychain tag"
+            className="w-full bg-surface rounded-lg px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:ring-1 focus:ring-primary-700 mb-3"
+            autoFocus
+          />
+          <div className="flex gap-2">
+            <button
+              onClick={confirmNewCard}
+              disabled={!newCardName.trim()}
+              className="flex-1 py-3 rounded-xl font-semibold text-sm text-white bg-primary-600 disabled:opacity-30 disabled:cursor-not-allowed active:bg-primary-700 transition-colors"
+            >
+              Save Card
+            </button>
+            <button
+              onClick={cancelNewCard}
+              className="py-3 px-4 rounded-xl text-sm text-gray-400 active:bg-surface-lighter transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      ) : !scanning ? (
         <button
           onClick={() => {
             setAddStatus('')
