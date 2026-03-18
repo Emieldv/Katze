@@ -37,6 +37,7 @@ public class KatzePlugin extends Plugin {
     private static final String KEY_WHITELIST = "whitelist";
 
     private NfcAdapter nfcAdapter;
+    private String pendingNfcUid = null;
 
     @Override
     public void load() {
@@ -155,6 +156,14 @@ public class KatzePlugin extends Plugin {
         call.resolve();
     }
 
+    @PluginMethod
+    public void getPendingNfcTag(PluginCall call) {
+        JSObject result = new JSObject();
+        result.put("uid", pendingNfcUid);
+        pendingNfcUid = null;
+        call.resolve(result);
+    }
+
     /**
      * Called from MainActivity when an NFC intent is received.
      */
@@ -168,7 +177,14 @@ public class KatzePlugin extends Plugin {
                 String uid = bytesToHex(tag.getId());
                 JSObject data = new JSObject();
                 data.put("uid", uid);
-                notifyListeners("nfcTagDetected", data);
+
+                if (hasListeners("nfcTagDetected")) {
+                    notifyListeners("nfcTagDetected", data);
+                } else {
+                    // Store for later retrieval when JS is ready
+                    pendingNfcUid = uid;
+                    Log.d("KatzeBlocker", "NFC tag stored as pending: " + uid);
+                }
             }
         }
     }

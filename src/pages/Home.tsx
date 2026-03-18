@@ -1,6 +1,5 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useNfc } from '../hooks/useNfc'
 import { useAppBlocker } from '../hooks/useAppBlocker'
 import SafeArea from '../components/SafeArea'
 import type { useStorage } from '../hooks/useStorage'
@@ -16,7 +15,6 @@ export default function Home({ storage }: HomeProps) {
   const [overrideInput, setOverrideInput] = useState('')
   const [overrideError, setOverrideError] = useState('')
   const [remainingTime, setRemainingTime] = useState<string | null>(null)
-  const [nfcError, setNfcError] = useState<string | null>(null)
 
   // Poll accessibility service status
   useEffect(() => {
@@ -26,33 +24,6 @@ export default function Home({ storage }: HomeProps) {
     }, 3000)
     return () => clearInterval(interval)
   }, [checkAccessibility])
-
-  const toggleLock = useCallback(async () => {
-    const newState = !storage.locked
-    console.log('[Katze] toggleLock:', newState, 'whitelist:', storage.whitelist)
-    await storage.saveLockState(newState)
-    await setLockState(newState, storage.whitelist)
-  }, [storage, setLockState])
-
-  const { startScan } = useNfc({
-    onTagDetected: (uid) => {
-      console.log('[Katze] NFC tag detected:', uid)
-      const isRegistered = storage.nfcCards.some((c) => c.uid === uid)
-      if (isRegistered) {
-        toggleLock()
-      } else {
-        console.log('[Katze] NFC tag not registered')
-      }
-    },
-  })
-
-  // Start NFC scanning when component mounts
-  useEffect(() => {
-    startScan().catch((err) => {
-      console.error('[Katze] NFC scan failed:', err)
-      setNfcError(String(err))
-    })
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Timer: auto-unlock after configured duration
   useEffect(() => {
@@ -125,12 +96,6 @@ export default function Home({ storage }: HomeProps) {
           >
             Open Accessibility Settings
           </button>
-        </div>
-      )}
-
-      {nfcError && (
-        <div className="bg-yellow-950 border border-yellow-800 rounded-xl p-4 mb-6">
-          <p className="text-sm text-yellow-300">NFC error: {nfcError}</p>
         </div>
       )}
 

@@ -13,6 +13,7 @@ export interface KatzePluginInterface {
   openAccessibilitySettings(): Promise<void>
   startNfcScan(): Promise<void>
   stopNfcScan(): Promise<void>
+  getPendingNfcTag(): Promise<{ uid: string | null }>
   addListener(
     eventName: 'nfcTagDetected',
     handler: (event: NfcTagEvent) => void,
