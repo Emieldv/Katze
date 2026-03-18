@@ -1,7 +1,9 @@
 import { Preferences } from '@capacitor/preferences'
-import { useState, useEffect, useCallback } from 'react'
-import type { NfcCard, TimerConfig } from '../types'
+import { useCallback, useEffect, useState } from 'react'
+
 import { generateOverrideCode } from '../utils/codeGenerator'
+
+import type { NfcCard, TimerConfig } from '../types'
 
 const KEYS = {
   SETUP_COMPLETE: 'katze_setup_complete',
@@ -83,10 +85,7 @@ export function useStorage() {
 
   const saveLockState = useCallback(async (isLocked: boolean) => {
     const now = isLocked ? new Date().toISOString() : null
-    await Promise.all([
-      set(KEYS.LOCKED, isLocked),
-      set(KEYS.LOCKED_AT, now),
-    ])
+    await Promise.all([set(KEYS.LOCKED, isLocked), set(KEYS.LOCKED_AT, now)])
     setLocked(isLocked)
     setLockedAt(now)
   }, [])

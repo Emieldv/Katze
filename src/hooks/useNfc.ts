@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
+
 import KatzePlugin from '../plugins/KatzePlugin'
+
 import type { PluginListenerHandle } from '@capacitor/core'
 
 // Module-level flag so the global NFC listener in App.tsx can

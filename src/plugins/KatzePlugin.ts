@@ -1,4 +1,5 @@
 import { registerPlugin } from '@capacitor/core'
+
 import type { PluginListenerHandle } from '@capacitor/core'
 import type { InstalledApp } from '../types'
 
@@ -23,10 +24,7 @@ export interface KatzePluginInterface {
   startNfcScan(): Promise<void>
   stopNfcScan(): Promise<void>
   getPendingNfcTag(): Promise<{ uid: string | null }>
-  addListener(
-    eventName: 'nfcTagDetected',
-    handler: (event: NfcTagEvent) => void,
-  ): Promise<PluginListenerHandle>
+  addListener(eventName: 'nfcTagDetected', handler: (event: NfcTagEvent) => void): Promise<PluginListenerHandle>
 }
 
 const KatzePlugin = registerPlugin<KatzePluginInterface>('KatzePlugin')
