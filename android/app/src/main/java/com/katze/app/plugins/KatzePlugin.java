@@ -1,5 +1,7 @@
 package com.katze.app.plugins;
 
+import android.Manifest;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -12,8 +14,13 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
+import android.os.Build;
 import android.provider.Settings;
 import android.util.Base64;
+import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
@@ -21,8 +28,6 @@ import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
-
-import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashSet;
@@ -35,6 +40,10 @@ public class KatzePlugin extends Plugin {
     private static final String PREFS_NAME = "katze_native_prefs";
     private static final String KEY_LOCKED = "locked";
     private static final String KEY_WHITELIST = "whitelist";
+    private static final String KEY_LOCKED_AT = "locked_at";
+    private static final String KEY_TIMER_HOURS = "timer_hours";
+    private static final String KEY_TIMER_MINUTES = "timer_minutes";
+    private static final int NOTIFICATION_PERMISSION_REQUEST = 1001;
 
     private NfcAdapter nfcAdapter;
     private String pendingNfcUid = null;
@@ -83,10 +92,20 @@ public class KatzePlugin extends Plugin {
     public void setLockState(PluginCall call) {
         boolean locked = call.getBoolean("locked", false);
         JSArray whitelistArray = call.getArray("whitelist");
+        int timerHours = call.getInt("timerHours", 0);
+        int timerMinutes = call.getInt("timerMinutes", 0);
 
         SharedPreferences prefs = getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(KEY_LOCKED, locked);
+
+        if (locked) {
+            editor.putLong(KEY_LOCKED_AT, System.currentTimeMillis());
+            editor.putInt(KEY_TIMER_HOURS, timerHours);
+            editor.putInt(KEY_TIMER_MINUTES, timerMinutes);
+        } else {
+            editor.putLong(KEY_LOCKED_AT, 0);
+        }
 
         Set<String> whitelist = new HashSet<>();
         if (whitelistArray != null) {
@@ -107,6 +126,44 @@ public class KatzePlugin extends Plugin {
 
         Log.d("KatzeBlocker", "setLockState: locked=" + locked + " whitelist=" + whitelist);
 
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void requestNotificationPermission(PluginCall call) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                        getActivity(),
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                        NOTIFICATION_PERMISSION_REQUEST);
+            }
+        }
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void isDndPolicyGranted(PluginCall call) {
+        NotificationManager nm = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        JSObject result = new JSObject();
+        result.put("granted", nm != null && nm.isNotificationPolicyAccessGranted());
+        call.resolve(result);
+    }
+
+    @PluginMethod
+    public void openDndSettings(PluginCall call) {
+        // Try app-specific notification policy settings first
+        try {
+            Intent intent = new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getContext().startActivity(intent);
+        } catch (Exception e) {
+            // Fallback to general notification settings
+            Intent fallback = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS);
+            fallback.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getContext().startActivity(fallback);
+        }
         call.resolve();
     }
 

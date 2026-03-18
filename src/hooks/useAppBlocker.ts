@@ -14,9 +14,18 @@ export function useAppBlocker() {
     await KatzePlugin.openAccessibilitySettings()
   }, [])
 
-  const setLockState = useCallback(async (locked: boolean, whitelist: string[]) => {
+  const setLockState = useCallback(async (
+    locked: boolean,
+    whitelist: string[],
+    timerConfig?: { hours: number; minutes: number },
+  ) => {
     const fullWhitelist = [...new Set([...whitelist, 'com.katze.app'])]
-    await KatzePlugin.setLockState({ locked, whitelist: fullWhitelist })
+    await KatzePlugin.setLockState({
+      locked,
+      whitelist: fullWhitelist,
+      timerHours: timerConfig?.hours ?? 0,
+      timerMinutes: timerConfig?.minutes ?? 0,
+    })
   }, [])
 
   return {

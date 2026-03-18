@@ -8,7 +8,15 @@ export interface NfcTagEvent {
 
 export interface KatzePluginInterface {
   getInstalledApps(): Promise<{ apps: InstalledApp[] }>
-  setLockState(options: { locked: boolean; whitelist: string[] }): Promise<void>
+  setLockState(options: {
+    locked: boolean
+    whitelist: string[]
+    timerHours?: number
+    timerMinutes?: number
+  }): Promise<void>
+  requestNotificationPermission(): Promise<void>
+  isDndPolicyGranted(): Promise<{ granted: boolean }>
+  openDndSettings(): Promise<void>
   isAccessibilityEnabled(): Promise<{ enabled: boolean }>
   openAccessibilitySettings(): Promise<void>
   startNfcScan(): Promise<void>

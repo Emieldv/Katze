@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useNfc } from '../hooks/useNfc'
 import { useAppBlocker } from '../hooks/useAppBlocker'
+import KatzePlugin from '../plugins/KatzePlugin'
 import SafeArea from '../components/SafeArea'
 import type { useStorage } from '../hooks/useStorage'
 import type { NfcCard } from '../types'
@@ -10,7 +11,7 @@ type SetupProps = {
   storage: ReturnType<typeof useStorage>
 }
 
-type Step = 'code' | 'accessibility' | 'nfc' | 'done'
+type Step = 'code' | 'accessibility' | 'dnd' | 'nfc' | 'done'
 
 export default function Setup({ storage }: SetupProps) {
   const navigate = useNavigate()
@@ -33,7 +34,7 @@ export default function Setup({ storage }: SetupProps) {
     pollRef.current = setInterval(async () => {
       const enabled = await checkAccessibility()
       if (enabled) {
-        setStep('nfc')
+        setStep('dnd')
       }
     }, 1500)
 
@@ -41,6 +42,20 @@ export default function Setup({ storage }: SetupProps) {
       if (pollRef.current) clearInterval(pollRef.current)
     }
   }, [step, checkAccessibility])
+
+  // Poll DND policy access when on that step
+  useEffect(() => {
+    if (step !== 'dnd') return
+
+    const poll = setInterval(async () => {
+      const { granted } = await KatzePlugin.isDndPolicyGranted()
+      if (granted) {
+        setStep('nfc')
+      }
+    }, 1500)
+
+    return () => clearInterval(poll)
+  }, [step])
 
   const { scanning, startScan, stopScan } = useNfc({
     onTagDetected: (uid) => {
@@ -82,7 +97,7 @@ export default function Setup({ storage }: SetupProps) {
     <SafeArea className="px-6">
       <h1 className="text-2xl font-bold text-primary-400 mb-2">Katze Setup</h1>
       <p className="text-sm text-gray-400 mb-8">
-        Step {step === 'code' ? '1/3' : step === 'accessibility' ? '2/3' : '3/3'}
+        Step {step === 'code' ? '1/4' : step === 'accessibility' ? '2/4' : step === 'dnd' ? '3/4' : '4/4'}
       </p>
 
       {step === 'code' && (
@@ -139,6 +154,30 @@ export default function Setup({ storage }: SetupProps) {
           <div className="mt-auto flex items-center justify-center gap-3 py-4">
             <div className="w-5 h-5 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
             <p className="text-sm text-gray-400">Waiting for accessibility service...</p>
+          </div>
+        </div>
+      )}
+
+      {step === 'dnd' && (
+        <div className="flex-1 flex flex-col">
+          <div className="bg-surface-light rounded-2xl p-6 mb-6">
+            <h2 className="text-lg font-semibold mb-2">Do Not Disturb</h2>
+            <p className="text-sm text-gray-400 mb-4">
+              Katze uses Do Not Disturb to silence app notifications while locked.
+              Calls and texts will still come through. Grant access in your device
+              settings — this page will advance automatically once detected.
+            </p>
+            <button
+              onClick={() => KatzePlugin.openDndSettings()}
+              className="w-full py-3 rounded-xl font-semibold text-primary-400 border border-primary-700 active:bg-primary-950 transition-colors"
+            >
+              Open DND Settings
+            </button>
+          </div>
+
+          <div className="mt-auto flex items-center justify-center gap-3 py-4">
+            <div className="w-5 h-5 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
+            <p className="text-sm text-gray-400">Waiting for DND access...</p>
           </div>
         </div>
       )}

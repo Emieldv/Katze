@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAppBlocker } from '../hooks/useAppBlocker'
+import KatzePlugin from '../plugins/KatzePlugin'
 import SafeArea from '../components/SafeArea'
 import type { useStorage } from '../hooks/useStorage'
 
@@ -15,6 +16,14 @@ export default function Home({ storage }: HomeProps) {
   const [overrideInput, setOverrideInput] = useState('')
   const [overrideError, setOverrideError] = useState('')
   const [remainingTime, setRemainingTime] = useState<string | null>(null)
+  const notificationRequested = useRef(false)
+
+  // Request notification permission once on first visit
+  useEffect(() => {
+    if (notificationRequested.current) return
+    notificationRequested.current = true
+    KatzePlugin.requestNotificationPermission().catch(() => {})
+  }, [])
 
   // Poll accessibility service status
   useEffect(() => {
@@ -41,8 +50,9 @@ export default function Home({ storage }: HomeProps) {
       const remaining = timerMs - elapsed
 
       if (remaining <= 0) {
+        // Native service handles auto-unlock too, but sync UI state
         await storage.saveLockState(false)
-        await setLockState(false, storage.whitelist)
+        await setLockState(false, storage.whitelist, undefined)
         setRemainingTime(null)
         clearInterval(interval)
         return

@@ -24,7 +24,7 @@ function AppRoutes() {
 
     const newState = !s.locked
     await s.saveLockState(newState)
-    await setLockState(newState, s.whitelist)
+    await setLockState(newState, s.whitelist, newState ? s.timerConfig : undefined)
   }, [setLockState])
 
   // Global NFC listener — works on any page, but only after setup
