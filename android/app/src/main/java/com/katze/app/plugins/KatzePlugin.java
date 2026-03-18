@@ -168,6 +168,15 @@ public class KatzePlugin extends Plugin {
     }
 
     @PluginMethod
+    public void getNativeLockState(PluginCall call) {
+        SharedPreferences prefs = getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        boolean locked = prefs.getBoolean(KEY_LOCKED, false);
+        JSObject result = new JSObject();
+        result.put("locked", locked);
+        call.resolve(result);
+    }
+
+    @PluginMethod
     public void isAccessibilityEnabled(PluginCall call) {
         boolean enabled = isAccessibilityServiceEnabled();
         JSObject result = new JSObject();

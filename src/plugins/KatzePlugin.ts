@@ -17,6 +17,7 @@ export interface KatzePluginInterface {
   requestNotificationPermission(): Promise<void>
   isDndPolicyGranted(): Promise<{ granted: boolean }>
   openDndSettings(): Promise<void>
+  getNativeLockState(): Promise<{ locked: boolean }>
   isAccessibilityEnabled(): Promise<{ enabled: boolean }>
   openAccessibilitySettings(): Promise<void>
   startNfcScan(): Promise<void>

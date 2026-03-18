@@ -1,5 +1,6 @@
 import { useEffect, useCallback, useRef } from 'react'
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
+import { App as CapApp } from '@capacitor/app'
 import { useStorage } from './hooks/useStorage'
 import { useAppBlocker } from './hooks/useAppBlocker'
 import { isNfcScanActive } from './hooks/useNfc'
@@ -15,6 +16,7 @@ function AppRoutes() {
   const location = useLocation()
   const storageRef = useRef(storage)
   storageRef.current = storage
+  const nfcToggleInProgress = useRef(false)
 
   const handleNfcToggle = useCallback(async (uid: string) => {
     const s = storageRef.current
@@ -23,9 +25,11 @@ function AppRoutes() {
     const isRegistered = s.nfcCards.some((c) => c.uid === uid)
     if (!isRegistered) return
 
+    nfcToggleInProgress.current = true
     const newState = !s.locked
     await s.saveLockState(newState)
     await setLockState(newState, s.whitelist, newState ? s.timerConfig : undefined)
+    nfcToggleInProgress.current = false
   }, [setLockState])
 
   // Global NFC listener — works on any page, but only after setup
@@ -63,6 +67,30 @@ function AppRoutes() {
     }
     checkPending()
   }, [storage.setupComplete]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Handle hardware back button: navigate to home from sub-pages
+  useEffect(() => {
+    const listener = CapApp.addListener('backButton', () => {
+      if (location.pathname !== '/') {
+        navigate('/', { replace: true })
+      }
+    })
+    return () => { listener.then((l) => l.remove()) }
+  }, [location.pathname, navigate])
+
+  // Sync lock state from native when app resumes (e.g. timer expired while closed)
+  useEffect(() => {
+    const listener = CapApp.addListener('appStateChange', async ({ isActive }) => {
+      if (!isActive || !storageRef.current.setupComplete) return
+      // Don't overwrite state if an NFC toggle just happened
+      if (nfcToggleInProgress.current) return
+      const { locked } = await KatzePlugin.getNativeLockState()
+      if (locked !== storageRef.current.locked) {
+        await storageRef.current.saveLockState(locked)
+      }
+    })
+    return () => { listener.then((l) => l.remove()) }
+  }, [])
 
   if (storage.setupComplete === null) {
     return (
