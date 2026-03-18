@@ -1,4 +1,5 @@
-import { useState, useCallback } from 'react'
+import { useCallback, useState } from 'react'
+
 import KatzePlugin from '../plugins/KatzePlugin'
 
 export function useAppBlocker() {
@@ -14,19 +15,18 @@ export function useAppBlocker() {
     await KatzePlugin.openAccessibilitySettings()
   }, [])
 
-  const setLockState = useCallback(async (
-    locked: boolean,
-    whitelist: string[],
-    timerConfig?: { hours: number; minutes: number },
-  ) => {
-    const fullWhitelist = [...new Set([...whitelist, 'com.katze.app'])]
-    await KatzePlugin.setLockState({
-      locked,
-      whitelist: fullWhitelist,
-      timerHours: timerConfig?.hours ?? 0,
-      timerMinutes: timerConfig?.minutes ?? 0,
-    })
-  }, [])
+  const setLockState = useCallback(
+    async (locked: boolean, whitelist: string[], timerConfig?: { hours: number; minutes: number }) => {
+      const fullWhitelist = [...new Set([...whitelist, 'com.katze.app'])]
+      await KatzePlugin.setLockState({
+        locked,
+        whitelist: fullWhitelist,
+        timerHours: timerConfig?.hours ?? 0,
+        timerMinutes: timerConfig?.minutes ?? 0,
+      })
+    },
+    [],
+  )
 
   return {
     accessibilityEnabled,

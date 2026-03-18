@@ -1,12 +1,14 @@
-import { useEffect, useCallback, useRef } from 'react'
-import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
-import { useStorage } from './hooks/useStorage'
+import { App as CapApp } from '@capacitor/app'
+import { useCallback, useEffect, useRef } from 'react'
+import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
+
 import { useAppBlocker } from './hooks/useAppBlocker'
 import { isNfcScanActive } from './hooks/useNfc'
-import KatzePlugin from './plugins/KatzePlugin'
-import Setup from './pages/Setup'
+import { useStorage } from './hooks/useStorage'
 import Home from './pages/Home'
 import Settings from './pages/Settings'
+import Setup from './pages/Setup'
+import KatzePlugin from './plugins/KatzePlugin'
 
 function AppRoutes() {
   const storage = useStorage()
@@ -15,18 +17,24 @@ function AppRoutes() {
   const location = useLocation()
   const storageRef = useRef(storage)
   storageRef.current = storage
+  const nfcToggleInProgress = useRef(false)
 
-  const handleNfcToggle = useCallback(async (uid: string) => {
-    const s = storageRef.current
-    if (!s.setupComplete) return
+  const handleNfcToggle = useCallback(
+    async (uid: string) => {
+      const s = storageRef.current
+      if (!s.setupComplete) return
 
-    const isRegistered = s.nfcCards.some((c) => c.uid === uid)
-    if (!isRegistered) return
+      const isRegistered = s.nfcCards.some((c) => c.uid === uid)
+      if (!isRegistered) return
 
-    const newState = !s.locked
-    await s.saveLockState(newState)
-    await setLockState(newState, s.whitelist, newState ? s.timerConfig : undefined)
-  }, [setLockState])
+      nfcToggleInProgress.current = true
+      const newState = !s.locked
+      await s.saveLockState(newState)
+      await setLockState(newState, s.whitelist, newState ? s.timerConfig : undefined)
+      nfcToggleInProgress.current = false
+    },
+    [setLockState],
+  )
 
   // Global NFC listener — works on any page, but only after setup
   useEffect(() => {
@@ -46,7 +54,7 @@ function AppRoutes() {
     return () => {
       listener.then((l) => l.remove())
     }
-  }, [storage.setupComplete, handleNfcToggle, navigate, location.pathname])
+  }, [handleNfcToggle, navigate, location.pathname])
 
   // Check for pending NFC tag on mount (cold start)
   useEffect(() => {
@@ -62,47 +70,54 @@ function AppRoutes() {
       }
     }
     checkPending()
-  }, [storage.setupComplete]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [storage.setupComplete, handleNfcToggle, navigate, location.pathname])
+
+  // Handle hardware back button: navigate to home from sub-pages
+  useEffect(() => {
+    const listener = CapApp.addListener('backButton', () => {
+      if (location.pathname !== '/') {
+        navigate('/', { replace: true })
+      }
+    })
+    return () => {
+      listener.then((l) => l.remove())
+    }
+  }, [location.pathname, navigate])
+
+  // Sync lock state from native when app resumes (e.g. timer expired while closed)
+  useEffect(() => {
+    const listener = CapApp.addListener('appStateChange', async ({ isActive }) => {
+      if (!isActive || !storageRef.current.setupComplete) return
+      // Don't overwrite state if an NFC toggle just happened
+      if (nfcToggleInProgress.current) return
+      const { locked } = await KatzePlugin.getNativeLockState()
+      if (locked !== storageRef.current.locked) {
+        await storageRef.current.saveLockState(locked)
+      }
+    })
+    return () => {
+      listener.then((l) => l.remove())
+    }
+  }, [])
 
   if (storage.setupComplete === null) {
     return (
-      <div className="flex items-center justify-center min-h-dvh">
-        <div className="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
+      <div className='flex items-center justify-center min-h-dvh'>
+        <div className='w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin' />
       </div>
     )
   }
 
   return (
     <Routes>
+      <Route path='/' element={storage.setupComplete ? <Home storage={storage} /> : <Navigate to='/setup' replace />} />
       <Route
-        path="/"
-        element={
-          storage.setupComplete ? (
-            <Home storage={storage} />
-          ) : (
-            <Navigate to="/setup" replace />
-          )
-        }
+        path='/setup'
+        element={storage.setupComplete ? <Navigate to='/' replace /> : <Setup storage={storage} />}
       />
       <Route
-        path="/setup"
-        element={
-          storage.setupComplete ? (
-            <Navigate to="/" replace />
-          ) : (
-            <Setup storage={storage} />
-          )
-        }
-      />
-      <Route
-        path="/settings"
-        element={
-          storage.setupComplete ? (
-            <Settings storage={storage} />
-          ) : (
-            <Navigate to="/setup" replace />
-          )
-        }
+        path='/settings'
+        element={storage.setupComplete ? <Settings storage={storage} /> : <Navigate to='/setup' replace />}
       />
     </Routes>
   )

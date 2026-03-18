@@ -1,4 +1,5 @@
 import { registerPlugin } from '@capacitor/core'
+
 import type { PluginListenerHandle } from '@capacitor/core'
 import type { InstalledApp } from '../types'
 
@@ -17,15 +18,13 @@ export interface KatzePluginInterface {
   requestNotificationPermission(): Promise<void>
   isDndPolicyGranted(): Promise<{ granted: boolean }>
   openDndSettings(): Promise<void>
+  getNativeLockState(): Promise<{ locked: boolean }>
   isAccessibilityEnabled(): Promise<{ enabled: boolean }>
   openAccessibilitySettings(): Promise<void>
   startNfcScan(): Promise<void>
   stopNfcScan(): Promise<void>
   getPendingNfcTag(): Promise<{ uid: string | null }>
-  addListener(
-    eventName: 'nfcTagDetected',
-    handler: (event: NfcTagEvent) => void,
-  ): Promise<PluginListenerHandle>
+  addListener(eventName: 'nfcTagDetected', handler: (event: NfcTagEvent) => void): Promise<PluginListenerHandle>
 }
 
 const KatzePlugin = registerPlugin<KatzePluginInterface>('KatzePlugin')
