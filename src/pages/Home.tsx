@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+import AlertBanner from '../components/AlertBanner'
 import SafeArea from '../components/SafeArea'
 import { useAppBlocker } from '../hooks/useAppBlocker'
 import KatzePlugin from '../plugins/KatzePlugin'
@@ -97,11 +98,13 @@ export default function Home({ storage }: HomeProps) {
       </div>
 
       {accessibilityEnabled === false && (
-        <div className='bg-red-950 border border-red-800 rounded-xl p-4 mb-6'>
-          <p className='text-sm text-red-300 mb-2'>Accessibility service is not enabled. App blocking will not work.</p>
-          <button onClick={openAccessibilitySettings} className='text-sm font-semibold text-red-400 underline'>
-            Open Accessibility Settings
-          </button>
+        <div className='mb-6'>
+          <AlertBanner
+            variant='error'
+            action={{ label: 'Open Accessibility Settings', onClick: openAccessibilitySettings }}
+          >
+            Accessibility service is not enabled. App blocking will not work.
+          </AlertBanner>
         </div>
       )}
 

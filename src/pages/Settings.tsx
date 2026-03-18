@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import AppList from '../components/AppList'
 import NfcCardManager from '../components/NfcCardManager'
 import SafeArea from '../components/SafeArea'
+import TabBar from '../components/TabBar'
 import TimerSettings from '../components/TimerSettings'
 
 import type { useStorage } from '../hooks/useStorage'
@@ -14,15 +15,15 @@ type SettingsProps = {
 
 type Tab = 'whitelist' | 'nfc' | 'timer'
 
+const tabs: { key: Tab; label: string }[] = [
+  { key: 'whitelist', label: 'Apps' },
+  { key: 'nfc', label: 'NFC Cards' },
+  { key: 'timer', label: 'Timer' },
+]
+
 export default function Settings({ storage }: SettingsProps) {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState<Tab>('whitelist')
-
-  const tabs: { key: Tab; label: string }[] = [
-    { key: 'whitelist', label: 'Apps' },
-    { key: 'nfc', label: 'NFC Cards' },
-    { key: 'timer', label: 'Timer' },
-  ]
 
   return (
     <SafeArea>
@@ -42,18 +43,8 @@ export default function Settings({ storage }: SettingsProps) {
         </button>
         <h1 className='text-2xl font-bold text-primary-400 mb-6'>Settings</h1>
 
-        <div className='flex gap-1 bg-surface-light rounded-xl p-1 mb-6'>
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-                activeTab === tab.key ? 'bg-primary-700 text-white' : 'text-gray-400'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+        <div className='mb-6'>
+          <TabBar tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
         </div>
       </div>
 

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { useNfc } from '../hooks/useNfc'
+import Spinner from './Spinner'
 
 import type { NfcCard } from '../types'
 
@@ -160,7 +161,7 @@ export default function NfcCardManager({ cards, onSave }: NfcCardManagerProps) {
         </button>
       ) : (
         <div className='text-center py-4'>
-          <div className='w-6 h-6 border-2 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-2' />
+          <Spinner className='mx-auto mb-2' />
           <p className='text-sm text-gray-400 mb-2'>Hold NFC card near phone...</p>
           <button onClick={stopScan} className='text-xs text-gray-600 underline'>
             Cancel

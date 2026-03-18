@@ -2,6 +2,7 @@ import { App as CapApp } from '@capacitor/app'
 import { useCallback, useEffect, useRef } from 'react'
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 
+import Spinner from './components/Spinner'
 import { useAppBlocker } from './hooks/useAppBlocker'
 import { isNfcScanActive } from './hooks/useNfc'
 import { useStorage } from './hooks/useStorage'
@@ -103,7 +104,7 @@ function AppRoutes() {
   if (storage.setupComplete === null) {
     return (
       <div className='flex items-center justify-center min-h-dvh'>
-        <div className='w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin' />
+        <Spinner size='lg' />
       </div>
     )
   }

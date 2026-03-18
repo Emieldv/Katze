@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import KatzePlugin from '../plugins/KatzePlugin'
+import Spinner from './Spinner'
 
 import type { InstalledApp } from '../types'
 
@@ -36,7 +37,7 @@ export default function AppList({ whitelist, onSave }: AppListProps) {
   if (loading) {
     return (
       <div className='flex items-center justify-center py-12'>
-        <div className='w-6 h-6 border-2 border-primary-500 border-t-transparent rounded-full animate-spin' />
+        <Spinner />
       </div>
     )
   }
