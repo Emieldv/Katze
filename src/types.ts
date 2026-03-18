@@ -14,13 +14,3 @@ export interface TimerConfig {
   hours: number
   minutes: number
 }
-
-export interface AppState {
-  setupComplete: boolean
-  overrideCode: string
-  nfcCards: NfcCard[]
-  whitelist: string[]
-  timerConfig: TimerConfig
-  locked: boolean
-  lockedAt: string | null
-}

@@ -10,6 +10,7 @@
     "format": "biome format --write .",
     "format:check": "biome check .",
     "lint": "biome check .",
+    "knip": "knip",
     "prepare": "husky"
   },
   "dependencies": {
@@ -33,6 +34,7 @@
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.0.0",
     "husky": "^9.1.7",
+    "knip": "^5.88.0",
     "tailwindcss": "^4.0.0",
     "typescript": "^5.7.0",
     "vite": "^6.0.0"

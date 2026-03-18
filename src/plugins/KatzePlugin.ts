@@ -3,11 +3,11 @@ import { registerPlugin } from '@capacitor/core'
 import type { PluginListenerHandle } from '@capacitor/core'
 import type { InstalledApp } from '../types'
 
-export interface NfcTagEvent {
+interface NfcTagEvent {
   uid: string
 }
 
-export interface KatzePluginInterface {
+interface KatzePluginInterface {
   getInstalledApps(): Promise<{ apps: InstalledApp[] }>
   setLockState(options: {
     locked: boolean
