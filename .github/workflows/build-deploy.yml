@@ -49,7 +49,9 @@ jobs:
           bundler-cache: true
           working-directory: android
 
-      - run: npm ci --include=optional
+      - uses: biomejs/setup-biome@v2
+
+      - run: npm ci
 
       - run: npm run build
 

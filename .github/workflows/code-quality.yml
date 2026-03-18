@@ -20,10 +20,12 @@ jobs:
           node-version: 22
           cache: npm
 
-      - run: npm ci --include=optional
+      - uses: biomejs/setup-biome@v2
+
+      - run: npm ci
 
       - name: Lint & format
-        run: npx biome check .
+        run: biome check .
 
       - name: Typecheck & build
         run: npm run build
