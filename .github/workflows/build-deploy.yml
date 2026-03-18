@@ -17,6 +17,10 @@ on:
           - internal
           - production
 
+concurrency:
+  group: build-deploy-${{ github.event_name }}
+  cancel-in-progress: true
+
 jobs:
   build:
     # Skip internal build when Release Please creates the release commit
