@@ -1,0 +1,38 @@
+default_platform(:android)
+
+platform :android do
+  desc "Build and deploy to a Play Store track"
+  lane :deploy do |options|
+    track = options[:track] || "internal"
+
+    # Read version name from package.json (managed by Release Please)
+    package_json = JSON.parse(File.read("../package.json"))
+    version_name = package_json["version"]
+
+    # Fetch the latest version code from the Play Store and increment
+    codes = google_play_track_version_codes(track: track)
+    next_version_code = (codes.max || 0) + 1
+
+    gradle(
+      task: "bundle",
+      build_type: "Release",
+      properties: {
+        "android.injected.signing.store.file" => ENV["KEYSTORE_PATH"],
+        "android.injected.signing.store.password" => ENV["KEYSTORE_PASSWORD"],
+        "android.injected.signing.key.alias" => ENV["KEY_ALIAS"],
+        "android.injected.signing.key.password" => ENV["KEY_PASSWORD"],
+        "android.injected.version.code" => next_version_code,
+        "android.injected.version.name" => version_name,
+      }
+    )
+
+    upload_to_play_store(
+      track: track,
+      aab: lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH],
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      skip_upload_changelogs: true,
+    )
+  end
+end
