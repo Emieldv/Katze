@@ -1,3 +1,5 @@
+import { fn } from 'storybook/test'
+
 import AlertBanner from './AlertBanner'
 
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -13,31 +15,32 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const ErrorVariant: Story = {
+// biome-ignore lint/suspicious/noShadowRestrictedNames: Storybook story name
+export const Error: Story = {
   args: {
     variant: 'error',
-    children: 'Accessibility service is not enabled. App blocking will not work.',
-    action: { label: 'Open Accessibility Settings', onClick: () => {} },
+    content: 'Accessibility service is not enabled. App blocking will not work.',
   },
 }
 
 export const Warning: Story = {
   args: {
     variant: 'warning',
-    children: 'Timer is set to zero. Apps will unlock immediately.',
+    content: 'Timer is set to zero. Apps will unlock immediately.',
   },
 }
 
 export const Info: Story = {
   args: {
     variant: 'info',
-    children: 'NFC scanning is active. Hold your card near the phone.',
+    content: 'NFC scanning is active. Hold your card near the phone.',
   },
 }
 
-export const WithoutAction: Story = {
+export const WithAction: Story = {
   args: {
     variant: 'error',
-    children: 'Something went wrong.',
+    content: 'Accessibility service is not enabled. App blocking will not work.',
+    action: { label: 'Open Accessibility Settings', onClick: fn() },
   },
 }

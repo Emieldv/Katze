@@ -11,10 +11,24 @@ const meta = {
   args: {
     onTabChange: fn(),
   },
+  argTypes: {
+    onTabChange: { table: { disable: true } },
+  },
   decorators: [
     (Story, context) => {
       const [activeTab, setActiveTab] = useState(context.args.activeTab)
-      return <Story args={{ ...context.args, activeTab, onTabChange: setActiveTab }} />
+      return (
+        <Story
+          args={{
+            ...context.args,
+            activeTab,
+            onTabChange: (tab: string) => {
+              setActiveTab(tab)
+              context.args.onTabChange(tab)
+            },
+          }}
+        />
+      )
     },
   ],
 } satisfies Meta<typeof TabBar>
@@ -22,7 +36,7 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const ThreeTabs: Story = {
+export const Default: Story = {
   args: {
     tabs: [
       { key: 'apps', label: 'Apps' },
@@ -30,15 +44,5 @@ export const ThreeTabs: Story = {
       { key: 'timer', label: 'Timer' },
     ],
     activeTab: 'apps',
-  },
-}
-
-export const TwoTabs: Story = {
-  args: {
-    tabs: [
-      { key: 'on', label: 'Enabled' },
-      { key: 'off', label: 'Disabled' },
-    ],
-    activeTab: 'on',
   },
 }

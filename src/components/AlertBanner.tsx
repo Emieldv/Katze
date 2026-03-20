@@ -1,8 +1,6 @@
-import type { ReactNode } from 'react'
-
 type AlertBannerProps = {
   variant?: 'error' | 'warning' | 'info'
-  children: ReactNode
+  content: string
   action?: {
     label: string
     onClick: () => void
@@ -27,12 +25,12 @@ const variants = {
   },
 }
 
-export default function AlertBanner({ variant = 'error', children, action }: AlertBannerProps) {
+export default function AlertBanner({ variant = 'error', content, action }: AlertBannerProps) {
   const styles = variants[variant]
 
   return (
     <div className={`${styles.container} border rounded-xl p-4`}>
-      <p className={`text-sm ${styles.text} ${action ? 'mb-2' : ''}`}>{children}</p>
+      <p className={`text-sm ${styles.text} ${action ? 'mb-2' : ''}`}>{content}</p>
       {action && (
         <button onClick={action.onClick} className={`text-sm font-semibold ${styles.action} underline`}>
           {action.label}

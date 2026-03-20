@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import AppList from '../components/AppList'
+import LinkButton from '../components/LinkButton'
 import NfcCardManager from '../components/NfcCardManager'
 import SafeArea from '../components/SafeArea'
 import TabBar from '../components/TabBar'
@@ -28,19 +29,21 @@ export default function Settings({ storage }: SettingsProps) {
   return (
     <SafeArea>
       <div className='px-6'>
-        <button
+        <LinkButton
+          size='medium'
+          text='Back'
           onClick={() => navigate('/')}
-          className='flex items-center gap-2 text-sm text-primary-400 mb-4 active:opacity-70'
-        >
-          <svg viewBox='0 0 20 20' fill='currentColor' className='w-4 h-4'>
-            <path
-              fillRule='evenodd'
-              d='M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z'
-              clipRule='evenodd'
-            />
-          </svg>
-          Back
-        </button>
+          className='mb-4 active:opacity-70'
+          icon={
+            <svg viewBox='0 0 20 20' fill='currentColor' className='w-4 h-4'>
+              <path
+                fillRule='evenodd'
+                d='M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z'
+                clipRule='evenodd'
+              />
+            </svg>
+          }
+        />
         <h1 className='text-2xl font-bold text-primary-400 mb-6'>Settings</h1>
 
         <div className='mb-6'>

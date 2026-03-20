@@ -17,7 +17,7 @@ export default function NumberStepper({ label, value, min, max, step = 1, onChan
     <div className='text-center'>
       {/* biome-ignore lint/a11y/noLabelWithoutControl: custom +/- stepper, not a standard input */}
       <label className='text-xs text-gray-500 block mb-2'>{label}</label>
-      <div className='flex items-center gap-2'>
+      <div className='flex items-center justify-center gap-2'>
         <button
           onClick={() => update(-step)}
           className='w-10 h-10 rounded-xl bg-surface flex items-center justify-center text-lg text-gray-400 active:bg-surface-lighter'

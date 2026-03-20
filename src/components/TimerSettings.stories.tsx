@@ -12,10 +12,24 @@ const meta = {
   args: {
     onSave: fn(),
   },
+  argTypes: {
+    onSave: { table: { disable: true } },
+  },
   decorators: [
     (Story, context) => {
       const [config, setConfig] = useState<TimerConfig>(context.args.config)
-      return <Story args={{ ...context.args, config, onSave: async (c: TimerConfig) => setConfig(c) }} />
+      return (
+        <Story
+          args={{
+            ...context.args,
+            config,
+            onSave: async (c: TimerConfig) => {
+              setConfig(c)
+              context.args.onSave(c)
+            },
+          }}
+        />
+      )
     },
   ],
 } satisfies Meta<typeof TimerSettings>
@@ -32,17 +46,5 @@ export const Default: Story = {
 export const ZeroTimer: Story = {
   args: {
     config: { hours: 0, minutes: 0 },
-  },
-}
-
-export const HoursOnly: Story = {
-  args: {
-    config: { hours: 8, minutes: 0 },
-  },
-}
-
-export const MinutesOnly: Story = {
-  args: {
-    config: { hours: 0, minutes: 45 },
   },
 }

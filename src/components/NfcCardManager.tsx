@@ -1,7 +1,11 @@
 import { useState } from 'react'
 
 import { useNfc } from '../hooks/useNfc'
+import Button from './Button'
+import LinkButton from './LinkButton'
+import NfcCardItem from './NfcCardItem'
 import Spinner from './Spinner'
+import TextInput from './TextInput'
 
 import type { NfcCard } from '../types'
 
@@ -11,8 +15,6 @@ type NfcCardManagerProps = {
 }
 
 export default function NfcCardManager({ cards, onSave }: NfcCardManagerProps) {
-  const [editingName, setEditingName] = useState<string | null>(null)
-  const [nameInput, setNameInput] = useState('')
   const [addStatus, setAddStatus] = useState('')
   const [pendingUid, setPendingUid] = useState<string | null>(null)
   const [newCardName, setNewCardName] = useState('')
@@ -50,23 +52,16 @@ export default function NfcCardManager({ cards, onSave }: NfcCardManagerProps) {
     setNewCardName('')
   }
 
-  function removeCard(uid: string) {
+  function handleRename(uid: string, name: string) {
+    onSave(cards.map((c) => (c.uid === uid ? { ...c, name } : c)))
+  }
+
+  function handleRemove(uid: string) {
     if (cards.length <= 2) {
       setAddStatus('You must keep at least 2 NFC cards registered.')
       return
     }
     onSave(cards.filter((c) => c.uid !== uid))
-  }
-
-  function startRename(card: NfcCard) {
-    setEditingName(card.uid)
-    setNameInput(card.name)
-  }
-
-  function saveRename(uid: string) {
-    if (!nameInput.trim()) return
-    onSave(cards.map((c) => (c.uid === uid ? { ...c, name: nameInput.trim() } : c)))
-    setEditingName(null)
   }
 
   return (
@@ -75,97 +70,47 @@ export default function NfcCardManager({ cards, onSave }: NfcCardManagerProps) {
 
       <div className='space-y-2 mb-4'>
         {cards.map((card) => (
-          <div key={card.uid} className='bg-surface-light rounded-xl p-4'>
-            <div className='flex items-center gap-3'>
-              <div className='w-8 h-8 rounded-full bg-primary-900 flex items-center justify-center text-primary-400 font-bold text-sm shrink-0'>
-                N
-              </div>
-
-              <div className='flex-1 min-w-0'>
-                {editingName === card.uid ? (
-                  <div className='flex gap-2'>
-                    <input
-                      type='text'
-                      value={nameInput}
-                      onChange={(e) => setNameInput(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && saveRename(card.uid)}
-                      className='flex-1 bg-surface rounded-lg px-3 py-1 text-sm text-white outline-none focus:ring-1 focus:ring-primary-700'
-                      // biome-ignore lint/a11y/noAutofocus: mobile app, autofocus improves UX for inline rename
-                      autoFocus
-                    />
-                    <button onClick={() => saveRename(card.uid)} className='text-xs text-primary-400'>
-                      Save
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    <p className='text-sm font-medium truncate'>{card.name}</p>
-                    <p className='text-xs text-gray-600 font-mono'>{card.uid}</p>
-                  </>
-                )}
-              </div>
-
-              {editingName !== card.uid && (
-                <div className='flex gap-2'>
-                  <button onClick={() => startRename(card)} className='text-xs text-gray-500'>
-                    Rename
-                  </button>
-                  <button onClick={() => removeCard(card.uid)} className='text-xs text-red-500'>
-                    Remove
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
+          <NfcCardItem key={card.uid} uid={card.uid} name={card.name} onRename={handleRename} onRemove={handleRemove} />
         ))}
       </div>
 
       {pendingUid ? (
         <div className='bg-surface-light rounded-xl p-4'>
           <p className='text-sm text-gray-400 mb-2'>Card detected! Give it a name:</p>
-          <input
-            type='text'
+          <TextInput
             value={newCardName}
             onChange={(e) => setNewCardName(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && confirmNewCard()}
             placeholder='e.g. Desk card, Keychain tag'
-            className='w-full bg-surface rounded-lg px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:ring-1 focus:ring-primary-700 mb-3'
-            // biome-ignore lint/a11y/noAutofocus: mobile app, autofocus improves UX for new card naming
+            variant='surface'
+            className='mb-3'
             autoFocus
           />
           <div className='flex gap-2'>
-            <button
-              onClick={confirmNewCard}
-              disabled={!newCardName.trim()}
-              className='flex-1 py-3 rounded-xl font-semibold text-sm text-white bg-primary-600 disabled:opacity-30 disabled:cursor-not-allowed active:bg-primary-700 transition-colors'
-            >
+            <Button onClick={confirmNewCard} disabled={!newCardName.trim()} fullWidth>
               Save Card
-            </button>
-            <button
-              onClick={cancelNewCard}
-              className='py-3 px-4 rounded-xl text-sm text-gray-400 active:bg-surface-lighter transition-colors'
-            >
+            </Button>
+            <Button variant='ghost' onClick={cancelNewCard}>
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       ) : !scanning ? (
-        <button
+        <Button
+          variant='outline'
+          fullWidth
           onClick={() => {
             setAddStatus('')
             startScan()
           }}
-          className='w-full py-3 rounded-xl font-semibold text-sm text-primary-400 border border-primary-700 active:bg-primary-950 transition-colors'
         >
           Add Another Card
-        </button>
+        </Button>
       ) : (
         <div className='text-center py-4'>
           <Spinner className='mx-auto mb-2' />
           <p className='text-sm text-gray-400 mb-2'>Hold NFC card near phone...</p>
-          <button onClick={stopScan} className='text-xs text-gray-600 underline'>
-            Cancel
-          </button>
+          <LinkButton variant='muted' underline text='Cancel' onClick={stopScan} />
         </div>
       )}
 

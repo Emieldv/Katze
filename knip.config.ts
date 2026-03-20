@@ -5,8 +5,8 @@ const config: KnipConfig = {
   // Disable Vite plugin to avoid loading vite.config.ts in CI,
   // which fails due to missing native lightningcss binary
   vite: false,
-  entry: ['src/main.tsx', 'src/test/setup.ts', '.storybook/main.ts', '.storybook/preview.ts'],
-  ignoreDependencies: ['@tailwindcss/vite', '@vitejs/plugin-react', '@storybook/addon-a11y', '@storybook/addon-docs'],
+  entry: ['src/main.tsx', 'src/test/setup.ts'],
+  ignoreDependencies: ['@tailwindcss/vite', '@vitejs/plugin-react'],
 }
 
 export default config

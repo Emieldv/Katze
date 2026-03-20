@@ -11,9 +11,14 @@ const preview: Preview = {
       },
     },
     backgrounds: {
-      default: 'dark',
-      values: [{ name: 'dark', value: 'oklch(0.15 0.01 150)' }],
+      options: {
+        surface: { name: 'Surface', value: 'oklch(0.15 0.01 150)' },
+        'surface-light': { name: 'Surface Light', value: 'oklch(0.2 0.01 150)' },
+      },
     },
+  },
+  initialGlobals: {
+    backgrounds: { value: 'surface' },
   },
 }
 
