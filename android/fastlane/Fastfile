@@ -6,12 +6,20 @@ platform :android do
     track = options[:track] || "internal"
 
     # Read version name from package.json (managed by Release Please)
-    package_json = JSON.parse(File.read("../package.json"))
+    package_json = JSON.parse(File.read("../../package.json"))
     version_name = package_json["version"]
 
-    # Fetch the latest version code from the Play Store and increment
-    codes = google_play_track_version_codes(track: track)
-    next_version_code = (codes.max || 0) + 1
+    # Fetch the latest version code from the internal track and increment
+    begin
+      codes = google_play_track_version_codes(
+        track: "internal",
+        json_key_data: ENV["PLAY_STORE_SERVICE_ACCOUNT_JSON"],
+      )
+      next_version_code = (codes.max || 0) + 1
+    rescue NoMethodError
+      # Track has no releases yet
+      next_version_code = 1
+    end
 
     gradle(
       task: "bundle",
@@ -29,6 +37,7 @@ platform :android do
     upload_to_play_store(
       track: track,
       aab: lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH],
+      json_key_data: ENV["PLAY_STORE_SERVICE_ACCOUNT_JSON"],
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,

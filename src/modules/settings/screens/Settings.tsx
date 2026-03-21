@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { App as CapApp } from '@capacitor/app'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import LinkButton from '../../../components/LinkButton'
@@ -25,6 +26,13 @@ const tabs: { key: Tab; label: string }[] = [
 export default function Settings({ storage }: SettingsProps) {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState<Tab>('whitelist')
+  const [appVersion, setAppVersion] = useState('')
+
+  useEffect(() => {
+    CapApp.getInfo().then(({ version, build }) => {
+      setAppVersion(`v${version} (${build})`)
+    })
+  }, [])
 
   return (
     <SafeArea>
@@ -56,6 +64,8 @@ export default function Settings({ storage }: SettingsProps) {
         {activeTab === 'nfc' && <NfcCardManager cards={storage.nfcCards} onSave={storage.saveNfcCards} />}
         {activeTab === 'timer' && <TimerSettings config={storage.timerConfig} onSave={storage.saveTimerConfig} />}
       </div>
+
+      {appVersion && <p className='text-xs text-gray-600 text-center pb-4'>{appVersion}</p>}
     </SafeArea>
   )
 }
