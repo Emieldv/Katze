@@ -1,11 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import SafeArea from '../components/SafeArea'
-import { useAppBlocker } from '../hooks/useAppBlocker'
-import KatzePlugin from '../plugins/KatzePlugin'
+import AlertBanner from '../../../components/AlertBanner'
+import Button from '../../../components/Button'
+import LinkButton from '../../../components/LinkButton'
+import SafeArea from '../../../components/SafeArea'
+import TextInput from '../../../components/TextInput'
+import { useAppBlocker } from '../../../hooks/useAppBlocker'
+import KatzePlugin from '../../../plugins/KatzePlugin'
 
-import type { useStorage } from '../hooks/useStorage'
+import type { useStorage } from '../../../hooks/useStorage'
 
 type HomeProps = {
   storage: ReturnType<typeof useStorage>
@@ -87,21 +91,22 @@ export default function Home({ storage }: HomeProps) {
     <SafeArea className='px-6'>
       <div className='flex items-center justify-between mb-8'>
         <h1 className='text-2xl font-bold text-primary-400'>Katze</h1>
-        <button
+        <LinkButton
+          variant='muted'
+          size='medium'
+          text='Settings'
           onClick={() => navigate('/settings')}
           disabled={storage.locked}
-          className='text-sm text-gray-400 disabled:opacity-30 disabled:cursor-not-allowed'
-        >
-          Settings
-        </button>
+        />
       </div>
 
       {accessibilityEnabled === false && (
-        <div className='bg-red-950 border border-red-800 rounded-xl p-4 mb-6'>
-          <p className='text-sm text-red-300 mb-2'>Accessibility service is not enabled. App blocking will not work.</p>
-          <button onClick={openAccessibilitySettings} className='text-sm font-semibold text-red-400 underline'>
-            Open Accessibility Settings
-          </button>
+        <div className='mb-6'>
+          <AlertBanner
+            variant='error'
+            content='Accessibility service is not enabled. App blocking will not work.'
+            action={{ label: 'Open Accessibility Settings', onClick: openAccessibilitySettings }}
+          />
         </div>
       )}
 
@@ -145,33 +150,32 @@ export default function Home({ storage }: HomeProps) {
         </p>
 
         {storage.locked && (
-          <button onClick={() => setShowOverride(!showOverride)} className='text-xs text-gray-600 underline'>
-            Emergency override
-          </button>
+          <LinkButton
+            variant='muted'
+            underline
+            text='Emergency override'
+            onClick={() => setShowOverride(!showOverride)}
+          />
         )}
       </div>
 
       {showOverride && (
         <div className='bg-surface-light rounded-2xl p-6 mb-6'>
           <h3 className='text-sm font-semibold mb-3 text-gray-300'>Enter Override Code</h3>
-          <input
-            type='text'
+          <TextInput
             value={overrideInput}
             onChange={(e) => {
               setOverrideInput(e.target.value)
               setOverrideError('')
             }}
             placeholder='Enter your emergency code'
-            className='w-full bg-surface rounded-xl px-4 py-3 text-sm font-mono text-white placeholder-gray-600 outline-none focus:ring-1 focus:ring-primary-700 mb-3'
+            variant='surface'
+            className='font-mono mb-3'
           />
           {overrideError && <p className='text-xs text-red-400 mb-3'>{overrideError}</p>}
-          <button
-            onClick={handleOverride}
-            disabled={!overrideInput}
-            className='w-full py-3 rounded-xl font-semibold text-sm text-white bg-red-700 disabled:opacity-30 active:bg-red-800 transition-colors'
-          >
+          <Button variant='danger' fullWidth onClick={handleOverride} disabled={!overrideInput}>
             Unlock with Override
-          </button>
+          </Button>
         </div>
       )}
     </SafeArea>

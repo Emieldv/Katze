@@ -1,13 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import SafeArea from '../components/SafeArea'
-import { useAppBlocker } from '../hooks/useAppBlocker'
-import { useNfc } from '../hooks/useNfc'
-import KatzePlugin from '../plugins/KatzePlugin'
+import Button from '../../../components/Button'
+import Checkbox from '../../../components/Checkbox'
+import SafeArea from '../../../components/SafeArea'
+import Spinner from '../../../components/Spinner'
+import TextInput from '../../../components/TextInput'
+import { useAppBlocker } from '../../../hooks/useAppBlocker'
+import { useNfc } from '../../../hooks/useNfc'
+import KatzePlugin from '../../../plugins/KatzePlugin'
 
-import type { useStorage } from '../hooks/useStorage'
-import type { NfcCard } from '../types'
+import type { useStorage } from '../../../hooks/useStorage'
+import type { NfcCard } from '../../../types'
 
 type SetupProps = {
   storage: ReturnType<typeof useStorage>
@@ -114,25 +118,16 @@ export default function Setup({ storage }: SetupProps) {
             </div>
           </div>
 
-          <label className='flex items-start gap-3 mb-6 cursor-pointer'>
-            <input
-              type='checkbox'
-              checked={codeConfirmed}
-              onChange={(e) => setCodeConfirmed(e.target.checked)}
-              className='mt-1 w-5 h-5 accent-primary-500'
-            />
-            <span className='text-sm text-gray-300'>
-              I have written down the override code and stored it in a safe place
-            </span>
-          </label>
+          <Checkbox
+            checked={codeConfirmed}
+            onChange={setCodeConfirmed}
+            label='I have written down the override code and stored it in a safe place'
+            className='mb-6'
+          />
 
-          <button
-            onClick={() => setStep('accessibility')}
-            disabled={!codeConfirmed}
-            className='mt-auto w-full py-4 rounded-xl font-semibold text-white bg-primary-600 disabled:opacity-30 disabled:cursor-not-allowed active:bg-primary-700 transition-colors'
-          >
+          <Button onClick={() => setStep('accessibility')} disabled={!codeConfirmed} fullWidth className='mt-auto py-4'>
             Continue
-          </button>
+          </Button>
         </div>
       )}
 
@@ -144,16 +139,13 @@ export default function Setup({ storage }: SetupProps) {
               Katze needs the Accessibility Service to block apps. Enable it in your device settings — this page will
               advance automatically once detected.
             </p>
-            <button
-              onClick={openAccessibilitySettings}
-              className='w-full py-3 rounded-xl font-semibold text-primary-400 border border-primary-700 active:bg-primary-950 transition-colors'
-            >
+            <Button variant='outline' fullWidth onClick={openAccessibilitySettings}>
               Open Accessibility Settings
-            </button>
+            </Button>
           </div>
 
           <div className='mt-auto flex items-center justify-center gap-3 py-4'>
-            <div className='w-5 h-5 border-2 border-primary-500 border-t-transparent rounded-full animate-spin' />
+            <Spinner size='sm' />
             <p className='text-sm text-gray-400'>Waiting for accessibility service...</p>
           </div>
         </div>
@@ -167,16 +159,13 @@ export default function Setup({ storage }: SetupProps) {
               Katze uses Do Not Disturb to silence app notifications while locked. Calls and texts will still come
               through. Grant access in your device settings — this page will advance automatically once detected.
             </p>
-            <button
-              onClick={() => KatzePlugin.openDndSettings()}
-              className='w-full py-3 rounded-xl font-semibold text-primary-400 border border-primary-700 active:bg-primary-950 transition-colors'
-            >
+            <Button variant='outline' fullWidth onClick={() => KatzePlugin.openDndSettings()}>
               Open DND Settings
-            </button>
+            </Button>
           </div>
 
           <div className='mt-auto flex items-center justify-center gap-3 py-4'>
-            <div className='w-5 h-5 border-2 border-primary-500 border-t-transparent rounded-full animate-spin' />
+            <Spinner size='sm' />
             <p className='text-sm text-gray-400'>Waiting for DND access...</p>
           </div>
         </div>
@@ -205,35 +194,27 @@ export default function Setup({ storage }: SetupProps) {
             {pendingUid ? (
               <div className='bg-surface rounded-xl p-4 mt-2'>
                 <p className='text-sm text-gray-400 mb-2'>Card detected! Give it a name:</p>
-                <input
-                  type='text'
+                <TextInput
                   value={cardName}
                   onChange={(e) => setCardName(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && confirmCardName()}
                   placeholder='e.g. Desk card, Keychain tag'
-                  className='w-full bg-surface-light rounded-lg px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:ring-1 focus:ring-primary-700 mb-3'
-                  // biome-ignore lint/a11y/noAutofocus: mobile app, autofocus improves UX for card naming
+                  variant='surface'
+                  className='mb-3'
                   autoFocus
                 />
-                <button
-                  onClick={confirmCardName}
-                  disabled={!cardName.trim()}
-                  className='w-full py-3 rounded-xl font-semibold text-sm text-white bg-primary-600 disabled:opacity-30 disabled:cursor-not-allowed active:bg-primary-700 transition-colors'
-                >
+                <Button onClick={confirmCardName} disabled={!cardName.trim()} fullWidth>
                   Save Card
-                </button>
+                </Button>
               </div>
             ) : pendingCards.length < 2 ? (
               !scanning ? (
-                <button
-                  onClick={startScan}
-                  className='w-full py-3 rounded-xl font-semibold text-primary-400 border border-primary-700 active:bg-primary-950 transition-colors mt-2'
-                >
+                <Button variant='outline' fullWidth onClick={startScan} className='mt-2'>
                   {pendingCards.length === 0 ? 'Scan First Card' : 'Scan Second Card'}
-                </button>
+                </Button>
               ) : (
                 <div className='text-center py-4'>
-                  <div className='w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-2' />
+                  <Spinner size='lg' className='mx-auto mb-2' />
                   <p className='text-sm text-gray-400'>Hold your NFC card near the phone...</p>
                 </div>
               )
@@ -242,13 +223,9 @@ export default function Setup({ storage }: SetupProps) {
             {nfcStatus && <p className='text-sm text-primary-400 mt-2 text-center'>{nfcStatus}</p>}
           </div>
 
-          <button
-            onClick={handleFinishSetup}
-            disabled={pendingCards.length < 2}
-            className='mt-auto w-full py-4 rounded-xl font-semibold text-white bg-primary-600 disabled:opacity-30 disabled:cursor-not-allowed active:bg-primary-700 transition-colors'
-          >
+          <Button onClick={handleFinishSetup} disabled={pendingCards.length < 2} fullWidth className='mt-auto py-4'>
             Finish Setup
-          </button>
+          </Button>
         </div>
       )}
     </SafeArea>
