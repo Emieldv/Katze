@@ -1,4 +1,4 @@
-package com.katze.app.plugins;
+package com.katzefocus.app.plugins;
 
 import android.Manifest;
 import android.app.NotificationManager;
@@ -118,7 +118,7 @@ public class KatzePlugin extends Plugin {
             }
         }
         // Always whitelist Katze and Settings
-        whitelist.add("com.katze.app");
+        whitelist.add("com.katzefocus.app");
         whitelist.add("com.android.settings");
         whitelist.add("com.samsung.android.app.settings");
         editor.putStringSet(KEY_WHITELIST, whitelist);
@@ -263,7 +263,7 @@ public class KatzePlugin extends Plugin {
         if (prefString == null) return false;
 
         String serviceName = getContext().getPackageName() +
-                "/com.katze.app.services.AppBlockerService";
+                "/com.katzefocus.app.services.AppBlockerService";
         return prefString.contains(serviceName);
     }
 

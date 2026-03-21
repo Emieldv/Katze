@@ -17,7 +17,7 @@ export function useAppBlocker() {
 
   const setLockState = useCallback(
     async (locked: boolean, whitelist: string[], timerConfig?: { hours: number; minutes: number }) => {
-      const fullWhitelist = [...new Set([...whitelist, 'com.katze.app'])]
+      const fullWhitelist = [...new Set([...whitelist, 'com.katzefocus.app'])]
       await KatzePlugin.setLockState({
         locked,
         whitelist: fullWhitelist,
