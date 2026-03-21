@@ -1,4 +1,4 @@
-package com.katze.app.services;
+package com.katzefocus.app.services;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
@@ -183,7 +183,7 @@ public class AppBlockerService extends AccessibilityService {
 
     private boolean isSystemPackage(String packageName) {
         // Katze itself
-        if (packageName.equals("com.katze.app")) return true;
+        if (packageName.equals("com.katzefocus.app")) return true;
 
         // System UI: notification shade, quick settings, status bar
         if (packageName.equals("com.android.systemui")) return true;
@@ -275,7 +275,7 @@ public class AppBlockerService extends AccessibilityService {
         }
 
         Notification notification = builder
-                .setSmallIcon(com.katze.app.R.drawable.ic_notification)
+                .setSmallIcon(com.katzefocus.app.R.drawable.ic_notification)
                 .setContentTitle("Katze is active")
                 .setContentText(contentText)
                 .setOngoing(true)

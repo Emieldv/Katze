@@ -1,10 +1,10 @@
-package com.katze.app;
+package com.katzefocus.app;
 
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.getcapacitor.BridgeActivity;
-import com.katze.app.plugins.KatzePlugin;
+import com.katzefocus.app.plugins.KatzePlugin;
 
 public class MainActivity extends BridgeActivity {
 

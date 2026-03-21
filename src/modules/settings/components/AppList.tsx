@@ -18,7 +18,7 @@ export default function AppList({ whitelist, onSave }: AppListProps) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const hiddenPackages = ['com.katze.app', 'com.android.settings', 'com.samsung.android.app.settings']
+    const hiddenPackages = ['com.katzefocus.app', 'com.android.settings', 'com.samsung.android.app.settings']
     KatzePlugin.getInstalledApps()
       .then(({ apps }) => {
         const visible = apps.filter((a) => !hiddenPackages.includes(a.packageName))
