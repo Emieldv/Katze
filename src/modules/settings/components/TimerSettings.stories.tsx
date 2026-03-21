@@ -4,7 +4,7 @@ import { fn } from 'storybook/test'
 import TimerSettings from './TimerSettings'
 
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import type { TimerConfig } from '../types'
+import type { TimerConfig } from '../../../types'
 
 const meta = {
   title: 'Components/TimerSettings',

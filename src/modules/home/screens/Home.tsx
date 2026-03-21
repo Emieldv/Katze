@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import AlertBanner from '../components/AlertBanner'
-import Button from '../components/Button'
-import LinkButton from '../components/LinkButton'
-import SafeArea from '../components/SafeArea'
-import TextInput from '../components/TextInput'
-import { useAppBlocker } from '../hooks/useAppBlocker'
-import KatzePlugin from '../plugins/KatzePlugin'
+import AlertBanner from '../../../components/AlertBanner'
+import Button from '../../../components/Button'
+import LinkButton from '../../../components/LinkButton'
+import SafeArea from '../../../components/SafeArea'
+import TextInput from '../../../components/TextInput'
+import { useAppBlocker } from '../../../hooks/useAppBlocker'
+import KatzePlugin from '../../../plugins/KatzePlugin'
 
-import type { useStorage } from '../hooks/useStorage'
+import type { useStorage } from '../../../hooks/useStorage'
 
 type HomeProps = {
   storage: ReturnType<typeof useStorage>

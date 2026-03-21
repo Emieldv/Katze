@@ -1,17 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import Button from '../components/Button'
-import Checkbox from '../components/Checkbox'
-import SafeArea from '../components/SafeArea'
-import Spinner from '../components/Spinner'
-import TextInput from '../components/TextInput'
-import { useAppBlocker } from '../hooks/useAppBlocker'
-import { useNfc } from '../hooks/useNfc'
-import KatzePlugin from '../plugins/KatzePlugin'
+import Button from '../../../components/Button'
+import Checkbox from '../../../components/Checkbox'
+import SafeArea from '../../../components/SafeArea'
+import Spinner from '../../../components/Spinner'
+import TextInput from '../../../components/TextInput'
+import { useAppBlocker } from '../../../hooks/useAppBlocker'
+import { useNfc } from '../../../hooks/useNfc'
+import KatzePlugin from '../../../plugins/KatzePlugin'
 
-import type { useStorage } from '../hooks/useStorage'
-import type { NfcCard } from '../types'
+import type { useStorage } from '../../../hooks/useStorage'
+import type { NfcCard } from '../../../types'
 
 type SetupProps = {
   storage: ReturnType<typeof useStorage>

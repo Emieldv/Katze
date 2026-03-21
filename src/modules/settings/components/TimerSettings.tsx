@@ -1,6 +1,6 @@
-import NumberStepper from './NumberStepper'
+import NumberStepper from '../../../components/NumberStepper'
 
-import type { TimerConfig } from '../types'
+import type { TimerConfig } from '../../../types'
 
 type TimerSettingsProps = {
   config: TimerConfig

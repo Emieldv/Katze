@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import KatzePlugin from '../plugins/KatzePlugin'
+import Spinner from '../../../components/Spinner'
+import TextInput from '../../../components/TextInput'
+import KatzePlugin from '../../../plugins/KatzePlugin'
 import AppListItem from './AppListItem'
-import Spinner from './Spinner'
-import TextInput from './TextInput'
 
-import type { InstalledApp } from '../types'
+import type { InstalledApp } from '../../../types'
 
 type AppListProps = {
   whitelist: string[]

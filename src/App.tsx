@@ -6,9 +6,9 @@ import Spinner from './components/Spinner'
 import { useAppBlocker } from './hooks/useAppBlocker'
 import { isNfcScanActive } from './hooks/useNfc'
 import { useStorage } from './hooks/useStorage'
-import Home from './pages/Home'
-import Settings from './pages/Settings'
-import Setup from './pages/Setup'
+import Home from './modules/home/screens/Home'
+import Settings from './modules/settings/screens/Settings'
+import Setup from './modules/setup/screens/Setup'
 import KatzePlugin from './plugins/KatzePlugin'
 
 function AppRoutes() {

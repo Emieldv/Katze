@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+import LinkButton from '../../../components/LinkButton'
+import SafeArea from '../../../components/SafeArea'
+import TabBar from '../../../components/TabBar'
 import AppList from '../components/AppList'
-import LinkButton from '../components/LinkButton'
 import NfcCardManager from '../components/NfcCardManager'
-import SafeArea from '../components/SafeArea'
-import TabBar from '../components/TabBar'
 import TimerSettings from '../components/TimerSettings'
 
-import type { useStorage } from '../hooks/useStorage'
+import type { useStorage } from '../../../hooks/useStorage'
 
 type SettingsProps = {
   storage: ReturnType<typeof useStorage>

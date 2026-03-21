@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import LinkButton from './LinkButton'
+import LinkButton from '../../../components/LinkButton'
 
 type NfcCardItemProps = {
   uid: string

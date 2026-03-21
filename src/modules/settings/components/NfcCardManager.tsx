@@ -1,13 +1,13 @@
 import { useState } from 'react'
 
-import { useNfc } from '../hooks/useNfc'
-import Button from './Button'
-import LinkButton from './LinkButton'
+import Button from '../../../components/Button'
+import LinkButton from '../../../components/LinkButton'
+import Spinner from '../../../components/Spinner'
+import TextInput from '../../../components/TextInput'
+import { useNfc } from '../../../hooks/useNfc'
 import NfcCardItem from './NfcCardItem'
-import Spinner from './Spinner'
-import TextInput from './TextInput'
 
-import type { NfcCard } from '../types'
+import type { NfcCard } from '../../../types'
 
 type NfcCardManagerProps = {
   cards: NfcCard[]
