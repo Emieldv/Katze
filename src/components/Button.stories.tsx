@@ -26,10 +26,12 @@ export const Primary: Story = {
     variant: 'primary',
     children: 'Continue',
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: 'Continue' }))
-    await expect(args.onClick).toHaveBeenCalledOnce()
+    await step('Click fires onClick callback', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: 'Continue' }))
+      await expect(args.onClick).toHaveBeenCalledOnce()
+    })
   },
 }
 
@@ -60,10 +62,12 @@ export const Disabled: Story = {
     children: 'Continue',
     disabled: true,
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: 'Continue' }))
-    await expect(args.onClick).not.toHaveBeenCalled()
+    await step('Click does not fire onClick when disabled', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: 'Continue' }))
+      await expect(args.onClick).not.toHaveBeenCalled()
+    })
   },
 }
 

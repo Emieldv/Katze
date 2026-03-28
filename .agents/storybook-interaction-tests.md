@@ -29,6 +29,7 @@ Every interactive component gets play functions that verify:
 
 Stories use decorators with `useState` for controlled components. Play functions should:
 
+- **Always wrap assertions in `step()`** — this shows readable labels in the Storybook interactions panel instead of raw assertion code. Every play function must use `step()` for all its assertions.
 - Use `within(canvasElement)` to scope queries
 - Use `userEvent` for interactions (click, type, etc.)
 - Assert callbacks via `expect(args.callbackName).toHaveBeenCalledWith(expectedArgs)`
@@ -37,11 +38,12 @@ Stories use decorators with `useState` for controlled components. Play functions
 ```tsx
 export const Default: Story = {
   args: { /* ... */ },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement)
-    const button = canvas.getByRole('button', { name: '+' })
-    await userEvent.click(button)
-    await expect(args.onChange).toHaveBeenCalled()
+    await step('Increments value when clicking +', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: '+' }))
+      await expect(args.onChange).toHaveBeenCalled()
+    })
   },
 }
 ```

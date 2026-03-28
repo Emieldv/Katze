@@ -25,10 +25,12 @@ export const Unselected: Story = {
     packageName: 'com.instagram.android',
     selected: false,
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByText('Instagram'))
-    await expect(args.onToggle).toHaveBeenCalledOnce()
+    await step('Clicking item fires onToggle callback', async () => {
+      await userEvent.click(canvas.getByText('Instagram'))
+      await expect(args.onToggle).toHaveBeenCalledOnce()
+    })
   },
 }
 

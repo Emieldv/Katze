@@ -28,10 +28,12 @@ export const Primary: Story = {
     text: 'Save',
     size: 'medium',
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: 'Save' }))
-    await expect(args.onClick).toHaveBeenCalledOnce()
+    await step('Click fires onClick callback', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: 'Save' }))
+      await expect(args.onClick).toHaveBeenCalledOnce()
+    })
   },
 }
 

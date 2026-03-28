@@ -43,9 +43,11 @@ export const WithAction: Story = {
     content: 'Accessibility service is not enabled. App blocking will not work.',
     action: { label: 'Open Accessibility Settings', onClick: fn() },
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: 'Open Accessibility Settings' }))
-    await expect(args.action!.onClick).toHaveBeenCalledOnce()
+    await step('Action button fires onClick callback', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: 'Open Accessibility Settings' }))
+      await expect(args.action!.onClick).toHaveBeenCalledOnce()
+    })
   },
 }

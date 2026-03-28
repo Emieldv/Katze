@@ -43,14 +43,18 @@ export const Default: Story = {
     label: 'I have written down the override code and stored it in a safe place',
     checked: false,
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement)
     const checkbox = canvas.getByRole('button')
 
-    await userEvent.click(checkbox)
-    await expect(args.onChange).toHaveBeenCalledWith(true)
+    await step('Toggles on when clicked', async () => {
+      await userEvent.click(checkbox)
+      await expect(args.onChange).toHaveBeenCalledWith(true)
+    })
 
-    await userEvent.click(checkbox)
-    await expect(args.onChange).toHaveBeenCalledWith(false)
+    await step('Toggles off when clicked again', async () => {
+      await userEvent.click(checkbox)
+      await expect(args.onChange).toHaveBeenCalledWith(false)
+    })
   },
 }

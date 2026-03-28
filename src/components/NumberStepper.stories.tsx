@@ -48,14 +48,18 @@ export const Default: Story = {
     max: 24,
     step: 1,
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement)
 
-    await userEvent.click(canvas.getByRole('button', { name: '+' }))
-    await expect(args.onChange).toHaveBeenLastCalledWith(3)
+    await step('Increments value when clicking +', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: '+' }))
+      await expect(args.onChange).toHaveBeenLastCalledWith(3)
+    })
 
-    await userEvent.click(canvas.getByRole('button', { name: '-' }))
-    await expect(args.onChange).toHaveBeenLastCalledWith(2)
+    await step('Decrements value when clicking -', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: '-' }))
+      await expect(args.onChange).toHaveBeenLastCalledWith(2)
+    })
   },
 }
 
@@ -70,10 +74,12 @@ export const ClampsAtMin: Story = {
     max: 24,
     step: 1,
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: '-' }))
-    await expect(args.onChange).toHaveBeenLastCalledWith(0)
+    await step('Clamps at minimum when clicking -', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: '-' }))
+      await expect(args.onChange).toHaveBeenLastCalledWith(0)
+    })
   },
 }
 
@@ -88,9 +94,11 @@ export const ClampsAtMax: Story = {
     max: 24,
     step: 1,
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: '+' }))
-    await expect(args.onChange).toHaveBeenLastCalledWith(24)
+    await step('Clamps at maximum when clicking +', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: '+' }))
+      await expect(args.onChange).toHaveBeenLastCalledWith(24)
+    })
   },
 }

@@ -45,13 +45,17 @@ export const Default: Story = {
     ],
     activeTab: 'apps',
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement)
 
-    await userEvent.click(canvas.getByRole('button', { name: 'NFC Cards' }))
-    await expect(args.onTabChange).toHaveBeenCalledWith('nfc')
+    await step('Switches to NFC Cards tab', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: 'NFC Cards' }))
+      await expect(args.onTabChange).toHaveBeenCalledWith('nfc')
+    })
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Timer' }))
-    await expect(args.onTabChange).toHaveBeenCalledWith('timer')
+    await step('Switches to Timer tab', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: 'Timer' }))
+      await expect(args.onTabChange).toHaveBeenCalledWith('timer')
+    })
   },
 }
