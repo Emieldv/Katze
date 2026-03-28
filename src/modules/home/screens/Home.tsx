@@ -121,7 +121,7 @@ export default function Home({ storage }: HomeProps) {
             fill='none'
             stroke='currentColor'
             strokeWidth={1.5}
-            className={`w-16 h-16 ${storage.locked ? 'text-white' : 'text-gray-500'}`}
+            className={`w-16 h-16 ${storage.locked ? 'text-white' : 'text-gray-400'}`}
           >
             {storage.locked ? (
               <path
@@ -145,7 +145,7 @@ export default function Home({ storage }: HomeProps) {
           <p className='text-sm text-gray-400 font-mono mb-2'>Auto-unlock in {remainingTime}</p>
         )}
 
-        <p className='text-sm text-gray-500 mb-8'>
+        <p className='text-sm text-gray-400 mb-8'>
           {storage.locked ? 'Tap your NFC card to unlock' : 'Tap your NFC card to lock apps'}
         </p>
 

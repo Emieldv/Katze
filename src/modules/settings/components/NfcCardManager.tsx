@@ -66,7 +66,7 @@ export default function NfcCardManager({ cards, onSave }: NfcCardManagerProps) {
 
   return (
     <div>
-      <p className='text-xs text-gray-500 mb-3'>Minimum 2 cards required. Tap any registered card to lock/unlock.</p>
+      <p className='text-xs text-gray-400 mb-3'>Minimum 2 cards required. Tap any registered card to lock/unlock.</p>
 
       <div className='space-y-2 mb-4'>
         {cards.map((card) => (

@@ -16,7 +16,7 @@ export default function NumberStepper({ label, value, min, max, step = 1, onChan
   return (
     <div className='text-center'>
       {/* biome-ignore lint/a11y/noLabelWithoutControl: custom +/- stepper, not a standard input */}
-      <label className='text-xs text-gray-500 block mb-2'>{label}</label>
+      <label className='text-xs text-gray-400 block mb-2'>{label}</label>
       <div className='flex items-center justify-center gap-2'>
         <button
           onClick={() => update(-step)}

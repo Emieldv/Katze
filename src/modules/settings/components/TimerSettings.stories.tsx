@@ -45,8 +45,8 @@ export const Default: Story = {
     const canvas = within(canvasElement)
 
     await step('Incrementing hours fires onSave with updated config', async () => {
-      const plusButtons = canvas.getAllByRole('button', { name: '+' })
-      await userEvent.click(plusButtons[0])
+      const [hoursPlus] = canvas.getAllByRole('button', { name: '+' })
+      await userEvent.click(hoursPlus as HTMLElement)
       await expect(args.onSave).toHaveBeenLastCalledWith({ hours: 3, minutes: 30 })
     })
 

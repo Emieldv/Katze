@@ -47,7 +47,7 @@ export const WithAction: Story = {
     const canvas = within(canvasElement)
     await step('Action button fires onClick callback', async () => {
       await userEvent.click(canvas.getByRole('button', { name: 'Open Accessibility Settings' }))
-      await expect(args.action!.onClick).toHaveBeenCalledOnce()
+      await expect(args.action?.onClick).toHaveBeenCalledOnce()
     })
   },
 }

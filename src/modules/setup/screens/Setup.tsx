@@ -186,7 +186,7 @@ export default function Setup({ storage }: SetupProps) {
                 </div>
                 <div className='flex-1'>
                   <p className='text-sm font-medium'>{card.name}</p>
-                  <p className='text-xs text-gray-500 font-mono'>{card.uid}</p>
+                  <p className='text-xs text-gray-400 font-mono'>{card.uid}</p>
                 </div>
               </div>
             ))}
