@@ -1,4 +1,4 @@
-import { fn } from 'storybook/test'
+import { expect, fn, userEvent, within } from 'storybook/test'
 
 import AppListItem from './AppListItem'
 
@@ -24,6 +24,13 @@ export const Unselected: Story = {
     appName: 'Instagram',
     packageName: 'com.instagram.android',
     selected: false,
+  },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement)
+    await step('Clicking item fires onToggle callback', async () => {
+      await userEvent.click(canvas.getByText('Instagram'))
+      await expect(args.onToggle).toHaveBeenCalledOnce()
+    })
   },
 }
 

@@ -12,7 +12,7 @@ export default function TimerSettings({ config, onSave }: TimerSettingsProps) {
 
   return (
     <div>
-      <p className='text-xs text-gray-500 mb-4'>After this duration, all apps will be automatically unlocked.</p>
+      <p className='text-xs text-gray-400 mb-4'>After this duration, all apps will be automatically unlocked.</p>
 
       <div className='bg-surface-light rounded-2xl p-6'>
         <div className='flex items-center justify-center gap-4 mb-6'>
@@ -24,7 +24,7 @@ export default function TimerSettings({ config, onSave }: TimerSettingsProps) {
             onChange={(hours) => onSave({ ...config, hours })}
           />
 
-          <span className='text-3xl font-bold text-gray-600 mt-6'>:</span>
+          <span className='text-3xl font-bold text-gray-400 mt-6'>:</span>
 
           <NumberStepper
             label='Minutes'
@@ -41,7 +41,7 @@ export default function TimerSettings({ config, onSave }: TimerSettingsProps) {
         )}
 
         {totalMinutes > 0 && (
-          <p className='text-xs text-gray-500 text-center'>
+          <p className='text-xs text-gray-400 text-center'>
             Apps will auto-unlock after {config.hours > 0 ? `${config.hours}h ` : ''}
             {config.minutes > 0 ? `${config.minutes}m` : ''}
           </p>

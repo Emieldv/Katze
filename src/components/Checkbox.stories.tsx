@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { fn } from 'storybook/test'
+import { expect, fn, userEvent, within } from 'storybook/test'
 
 import Checkbox from './Checkbox'
 
@@ -42,5 +42,19 @@ export const Default: Story = {
   args: {
     label: 'I have written down the override code and stored it in a safe place',
     checked: false,
+  },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement)
+    const checkbox = canvas.getByRole('button')
+
+    await step('Toggles on when clicked', async () => {
+      await userEvent.click(checkbox)
+      await expect(args.onChange).toHaveBeenCalledWith(true)
+    })
+
+    await step('Toggles off when clicked again', async () => {
+      await userEvent.click(checkbox)
+      await expect(args.onChange).toHaveBeenCalledWith(false)
+    })
   },
 }

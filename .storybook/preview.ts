@@ -16,6 +16,12 @@ const preview: Preview = {
         'surface-light': { name: 'Surface Light', value: 'oklch(0.2 0.01 150)' },
       },
     },
+    a11y: {
+      // 'todo' - show a11y violations in the test UI only
+      // 'error' - fail CI on a11y violations
+      // 'off' - skip a11y checks entirely
+      test: 'error',
+    },
   },
   initialGlobals: {
     backgrounds: { value: 'surface' },

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { fn } from 'storybook/test'
+import { expect, fn, userEvent, within } from 'storybook/test'
 
 import TimerSettings from './TimerSettings'
 
@@ -41,10 +41,29 @@ export const Default: Story = {
   args: {
     config: { hours: 2, minutes: 30 },
   },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement)
+
+    await step('Incrementing hours fires onSave with updated config', async () => {
+      const [hoursPlus] = canvas.getAllByRole('button', { name: '+' })
+      await userEvent.click(hoursPlus as HTMLElement)
+      await expect(args.onSave).toHaveBeenLastCalledWith({ hours: 3, minutes: 30 })
+    })
+
+    await step('Shows auto-unlock summary text', async () => {
+      await expect(canvas.getByText(/Apps will auto-unlock after/)).toBeInTheDocument()
+    })
+  },
 }
 
 export const ZeroTimer: Story = {
   args: {
     config: { hours: 0, minutes: 0 },
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement)
+    await step('Shows zero-timer warning', async () => {
+      await expect(canvas.getByText('Timer cannot be zero — apps would unlock immediately.')).toBeInTheDocument()
+    })
   },
 }

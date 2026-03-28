@@ -13,7 +13,7 @@ type LinkButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'>
 
 const variants: Record<LinkButtonVariant, string> = {
   primary: 'text-primary-400',
-  muted: 'text-gray-500',
+  muted: 'text-gray-400',
   danger: 'text-red-500',
 }
 

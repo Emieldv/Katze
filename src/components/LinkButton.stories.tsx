@@ -1,4 +1,4 @@
-import { fn } from 'storybook/test'
+import { expect, fn, userEvent, within } from 'storybook/test'
 
 import LinkButton from './LinkButton'
 
@@ -27,6 +27,13 @@ export const Primary: Story = {
     variant: 'primary',
     text: 'Save',
     size: 'medium',
+  },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement)
+    await step('Click fires onClick callback', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: 'Save' }))
+      await expect(args.onClick).toHaveBeenCalledOnce()
+    })
   },
 }
 

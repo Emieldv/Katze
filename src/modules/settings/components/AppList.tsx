@@ -46,7 +46,7 @@ export default function AppList({ whitelist, onSave }: AppListProps) {
 
   return (
     <div>
-      <p className='text-xs text-gray-500 mb-3'>Whitelisted apps will NOT be blocked when locked.</p>
+      <p className='text-xs text-gray-400 mb-3'>Whitelisted apps will NOT be blocked when locked.</p>
 
       <TextInput
         value={search}
