@@ -1,4 +1,4 @@
-import { fn } from 'storybook/test'
+import { expect, fn, userEvent, within } from 'storybook/test'
 
 import NfcCardItem from './NfcCardItem'
 
@@ -24,5 +24,20 @@ export const Default: Story = {
   args: {
     uid: 'A1:B2:C3:D4',
     name: 'Desk card',
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+
+    // Test remove
+    await userEvent.click(canvas.getByRole('button', { name: 'Remove' }))
+    await expect(args.onRemove).toHaveBeenCalledWith('A1:B2:C3:D4')
+
+    // Test rename flow
+    await userEvent.click(canvas.getByRole('button', { name: 'Rename' }))
+    const input = canvas.getByRole('textbox')
+    await userEvent.clear(input)
+    await userEvent.type(input, 'Office card')
+    await userEvent.click(canvas.getByRole('button', { name: 'Save' }))
+    await expect(args.onRename).toHaveBeenCalledWith('A1:B2:C3:D4', 'Office card')
   },
 }

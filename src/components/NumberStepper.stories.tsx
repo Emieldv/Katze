@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { fn } from 'storybook/test'
+import { expect, fn, userEvent, within } from 'storybook/test'
 
 import NumberStepper from './NumberStepper'
 
@@ -47,5 +47,50 @@ export const Default: Story = {
     min: 0,
     max: 24,
     step: 1,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+
+    await userEvent.click(canvas.getByRole('button', { name: '+' }))
+    await expect(args.onChange).toHaveBeenLastCalledWith(3)
+
+    await userEvent.click(canvas.getByRole('button', { name: '-' }))
+    await expect(args.onChange).toHaveBeenLastCalledWith(2)
+  },
+}
+
+export const ClampsAtMin: Story = {
+  globals: {
+    backgrounds: { value: 'surface-light' },
+  },
+  args: {
+    label: 'Hours',
+    value: 0,
+    min: 0,
+    max: 24,
+    step: 1,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button', { name: '-' }))
+    await expect(args.onChange).toHaveBeenLastCalledWith(0)
+  },
+}
+
+export const ClampsAtMax: Story = {
+  globals: {
+    backgrounds: { value: 'surface-light' },
+  },
+  args: {
+    label: 'Hours',
+    value: 24,
+    min: 0,
+    max: 24,
+    step: 1,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button', { name: '+' }))
+    await expect(args.onChange).toHaveBeenLastCalledWith(24)
   },
 }

@@ -1,4 +1,4 @@
-import { fn } from 'storybook/test'
+import { expect, fn, userEvent, within } from 'storybook/test'
 
 import AlertBanner from './AlertBanner'
 
@@ -42,5 +42,10 @@ export const WithAction: Story = {
     variant: 'error',
     content: 'Accessibility service is not enabled. App blocking will not work.',
     action: { label: 'Open Accessibility Settings', onClick: fn() },
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button', { name: 'Open Accessibility Settings' }))
+    await expect(args.action!.onClick).toHaveBeenCalledOnce()
   },
 }

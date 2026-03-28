@@ -1,4 +1,4 @@
-import { fn } from 'storybook/test'
+import { expect, fn, userEvent, within } from 'storybook/test'
 
 import Button from './Button'
 
@@ -25,6 +25,11 @@ export const Primary: Story = {
   args: {
     variant: 'primary',
     children: 'Continue',
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button', { name: 'Continue' }))
+    await expect(args.onClick).toHaveBeenCalledOnce()
   },
 }
 
@@ -54,6 +59,11 @@ export const Disabled: Story = {
     variant: 'primary',
     children: 'Continue',
     disabled: true,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button', { name: 'Continue' }))
+    await expect(args.onClick).not.toHaveBeenCalled()
   },
 }
 

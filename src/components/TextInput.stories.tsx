@@ -1,4 +1,4 @@
-import { fn } from 'storybook/test'
+import { expect, fn, userEvent, within } from 'storybook/test'
 
 import TextInput from './TextInput'
 
@@ -23,6 +23,13 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   args: {
     placeholder: 'Search apps...',
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    const input = canvas.getByPlaceholderText('Search apps...')
+    await userEvent.type(input, 'Instagram')
+    await expect(input).toHaveValue('Instagram')
+    await expect(args.onChange).toHaveBeenCalled()
   },
 }
 
