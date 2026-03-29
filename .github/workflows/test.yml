@@ -4,6 +4,13 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - 'src/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vitest.*'
+      - '.storybook/**'
+      - '.github/workflows/test.yml'
 
 concurrency:
   group: test-${{ github.head_ref }}
