@@ -50,3 +50,4 @@ jobs:
         with:
           json-summary-path: coverage/coverage-summary.json
           name: Storybook Coverage
+          file-coverage-mode: changes
