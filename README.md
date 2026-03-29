@@ -4,7 +4,6 @@
 [![Tests](https://github.com/Emieldv/Katze/actions/workflows/test.yml/badge.svg)](https://github.com/Emieldv/Katze/actions/workflows/test.yml)
 ![Coverage](https://img.shields.io/endpoint?url=https://emieldv.github.io/Katze/coverage/badge.json)
 [![Storybook](https://img.shields.io/badge/storybook-docs-ff4785)](https://emieldv.github.io/Katze/)
-![Code style: Biome](https://img.shields.io/badge/code_style-biome-60a5fa)
 [![License: GPL v3](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
 
 Open-source Android app blocker that uses NFC cards to lock and unlock access to apps. Designed for focus and digital wellbeing.
