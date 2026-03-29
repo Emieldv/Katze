@@ -8,6 +8,7 @@ const meta = {
   title: 'Components/LinkButton',
   component: LinkButton,
   args: {
+    text: 'LinkButton',
     onClick: fn(),
   },
   argTypes: {
@@ -22,11 +23,9 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Primary: Story = {
+export const Default: Story = {
   args: {
-    variant: 'primary',
     text: 'Save',
-    size: 'medium',
   },
   play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement)
@@ -37,20 +36,14 @@ export const Primary: Story = {
   },
 }
 
-export const Muted: Story = {
-  args: {
-    variant: 'muted',
-    text: 'Rename',
-    size: 'medium',
-  },
-}
-
-export const Danger: Story = {
-  args: {
-    variant: 'danger',
-    text: 'Remove',
-    size: 'medium',
-  },
+export const Variants: Story = {
+  render: () => (
+    <div className='flex flex-col items-start gap-4'>
+      <LinkButton variant='primary' text='Save' />
+      <LinkButton variant='muted' text='Rename' />
+      <LinkButton variant='danger' text='Remove' />
+    </div>
+  ),
 }
 
 export const Underline: Story = {

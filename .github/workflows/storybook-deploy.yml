@@ -31,6 +31,23 @@ jobs:
 
       - run: npm run build-storybook
 
+      - run: npx playwright install chromium --with-deps
+
+      - run: npm run test:coverage
+
+      - name: Generate coverage badge
+        run: |
+          TOTAL=$(node -e "const r = JSON.parse(require('fs').readFileSync('./coverage/coverage-summary.json', 'utf8')); console.log(r.total.statements.pct);")
+          COLOR="red"
+          if (( $(echo "$TOTAL >= 80" | bc -l) )); then COLOR="brightgreen"
+          elif (( $(echo "$TOTAL >= 60" | bc -l) )); then COLOR="yellow"
+          elif (( $(echo "$TOTAL >= 40" | bc -l) )); then COLOR="orange"
+          fi
+          echo "{\"schemaVersion\":1,\"label\":\"coverage\",\"message\":\"${TOTAL}%\",\"color\":\"${COLOR}\"}" > coverage/badge.json
+
+      - name: Copy coverage into storybook-static
+        run: cp -r coverage storybook-static/coverage
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: storybook-static

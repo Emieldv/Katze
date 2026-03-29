@@ -1,12 +1,15 @@
 type NumberStepperProps = {
+  /** Descriptive label displayed above the stepper. */
   label: string
   value: number
   min: number
   max: number
+  /** Increment/decrement amount per button press. */
   step?: number
   onChange: (value: number) => void
 }
 
+/** Numeric +/- control for selecting a value within a range. */
 export default function NumberStepper({ label, value, min, max, step = 1, onChange }: NumberStepperProps) {
   function update(delta: number) {
     const next = value + delta

@@ -7,6 +7,7 @@ type TimerSettingsProps = {
   onSave: (config: TimerConfig) => Promise<void>
 }
 
+/** Hours/minutes picker for configuring the auto-unlock timer duration. */
 export default function TimerSettings({ config, onSave }: TimerSettingsProps) {
   const totalMinutes = config.hours * 60 + config.minutes
 

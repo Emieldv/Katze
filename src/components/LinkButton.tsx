@@ -4,10 +4,15 @@ type LinkButtonVariant = 'primary' | 'muted' | 'danger'
 type LinkButtonSize = 'small' | 'medium'
 
 type LinkButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
+  /** Color variant. */
   variant?: LinkButtonVariant
+  /** Text size. */
   size?: LinkButtonSize
+  /** Button label. */
   text: string
+  /** Optional icon rendered before the text. */
   icon?: ReactNode
+  /** Renders the text with an underline. */
   underline?: boolean
 }
 
@@ -22,6 +27,7 @@ const sizes: Record<LinkButtonSize, string> = {
   medium: 'text-sm',
 }
 
+/** Text-style button for secondary or inline actions. */
 export default function LinkButton({
   variant = 'primary',
   size = 'small',

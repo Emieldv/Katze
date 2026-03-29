@@ -5,7 +5,7 @@ import LinkButton from '../../../components/LinkButton'
 import Spinner from '../../../components/Spinner'
 import TextInput from '../../../components/TextInput'
 import { useNfc } from '../../../hooks/useNfc'
-import NfcCardItem from './NfcCardItem'
+import NfcCardItem from '../components/NfcCardItem'
 
 import type { NfcCard } from '../../../types'
 
@@ -14,7 +14,7 @@ type NfcCardManagerProps = {
   onSave: (cards: NfcCard[]) => Promise<void>
 }
 
-export default function NfcCardManager({ cards, onSave }: NfcCardManagerProps) {
+export default function NfcCardManagerScreen({ cards, onSave }: NfcCardManagerProps) {
   const [addStatus, setAddStatus] = useState('')
   const [pendingUid, setPendingUid] = useState<string | null>(null)
   const [newCardName, setNewCardName] = useState('')

@@ -1,11 +1,13 @@
 type AppListItemProps = {
   appName: string
   packageName: string
+  /** Base64-encoded PNG or HTTP URL for the app icon. */
   icon?: string
   selected: boolean
   onToggle: () => void
 }
 
+/** Selectable row representing an installed app, used in the whitelist picker. */
 export default function AppListItem({ appName, packageName, icon, selected, onToggle }: AppListItemProps) {
   return (
     // biome-ignore lint/a11y/useSemanticElements: custom styled row with ARIA checkbox semantics
