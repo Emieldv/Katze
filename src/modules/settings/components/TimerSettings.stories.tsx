@@ -53,6 +53,36 @@ export const Default: Story = {
     await step('Shows auto-unlock summary text', async () => {
       await expect(canvas.getByText(/Apps will auto-unlock after/)).toBeInTheDocument()
     })
+
+    await step('Incrementing minutes fires onSave with updated config', async () => {
+      const plusButtons = canvas.getAllByRole('button', { name: '+' })
+      await userEvent.click(plusButtons[1] as HTMLElement)
+      await expect(args.onSave).toHaveBeenLastCalledWith({ hours: 3, minutes: 35 })
+    })
+  },
+}
+
+export const HoursOnly: Story = {
+  args: {
+    config: { hours: 1, minutes: 0 },
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement)
+    await step('Shows hours-only summary text', async () => {
+      await expect(canvas.getByText(/Apps will auto-unlock after 1h/)).toBeInTheDocument()
+    })
+  },
+}
+
+export const MinutesOnly: Story = {
+  args: {
+    config: { hours: 0, minutes: 30 },
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement)
+    await step('Shows minutes-only summary text', async () => {
+      await expect(canvas.getByText(/Apps will auto-unlock after 30m/)).toBeInTheDocument()
+    })
   },
 }
 

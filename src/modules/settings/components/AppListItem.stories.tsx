@@ -54,8 +54,38 @@ export const Variants: Story = {
         selected={true}
         onToggle={() => {}}
       />
+      <AppListItem
+        appName='Custom App'
+        packageName='com.custom.app'
+        icon='iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
+        selected={false}
+        onToggle={() => {}}
+      />
     </div>
   ),
+}
+
+export const KeyboardToggle: Story = {
+  args: {
+    appName: 'Instagram',
+    packageName: 'com.instagram.android',
+    selected: false,
+  },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement)
+    const item = canvas.getByRole('checkbox')
+
+    await step('Space key fires onToggle callback', async () => {
+      item.focus()
+      await userEvent.keyboard(' ')
+      await expect(args.onToggle).toHaveBeenCalledOnce()
+    })
+
+    await step('Enter key fires onToggle callback', async () => {
+      await userEvent.keyboard('{Enter}')
+      await expect(args.onToggle).toHaveBeenCalledTimes(2)
+    })
+  },
 }
 
 export const WithoutIcon: Story = {

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import Spinner from '../../../components/Spinner'
 import TextInput from '../../../components/TextInput'
 import KatzePlugin from '../../../plugins/KatzePlugin'
-import AppListItem from './AppListItem'
+import AppListItem from '../components/AppListItem'
 
 import type { InstalledApp } from '../../../types'
 
@@ -12,7 +12,7 @@ type AppListProps = {
   onSave: (whitelist: string[]) => Promise<void>
 }
 
-export default function AppList({ whitelist, onSave }: AppListProps) {
+export default function AppListScreen({ whitelist, onSave }: AppListProps) {
   const [apps, setApps] = useState<InstalledApp[]>([])
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)

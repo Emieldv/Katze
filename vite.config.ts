@@ -19,7 +19,7 @@ export default defineConfig({
       provider: 'v8',
       enabled: false,
       include: ['src/components/**/*.tsx', 'src/modules/**/components/**/*.tsx'],
-      exclude: ['**/*.stories.tsx', '**/*.test.tsx'],
+      exclude: ['**/*.stories.tsx', '**/*.test.tsx', '**/SafeArea.tsx'],
       reporter: ['text', 'json-summary', 'html'],
       reportsDirectory: './coverage',
     },

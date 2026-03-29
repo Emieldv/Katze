@@ -43,3 +43,39 @@ export const Default: Story = {
     })
   },
 }
+
+export const RenameWithEnter: Story = {
+  args: {
+    uid: 'A1:B2:C3:D4',
+    name: 'Desk card',
+  },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement)
+
+    await step('Enter key submits rename', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: 'Rename' }))
+      const input = canvas.getByRole('textbox')
+      await userEvent.clear(input)
+      await userEvent.type(input, 'Office card{Enter}')
+      await expect(args.onRename).toHaveBeenCalledWith('A1:B2:C3:D4', 'Office card')
+    })
+  },
+}
+
+export const RenameEmptyBlocked: Story = {
+  args: {
+    uid: 'A1:B2:C3:D4',
+    name: 'Desk card',
+  },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement)
+
+    await step('Empty name does not fire onRename', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: 'Rename' }))
+      const input = canvas.getByRole('textbox')
+      await userEvent.clear(input)
+      await userEvent.click(canvas.getByRole('button', { name: 'Save' }))
+      await expect(args.onRename).not.toHaveBeenCalled()
+    })
+  },
+}

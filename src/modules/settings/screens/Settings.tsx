@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom'
 import LinkButton from '../../../components/LinkButton'
 import SafeArea from '../../../components/SafeArea'
 import TabBar from '../../../components/TabBar'
-import AppList from '../components/AppList'
-import NfcCardManager from '../components/NfcCardManager'
 import TimerSettings from '../components/TimerSettings'
+import AppListScreen from './AppListScreen'
+import NfcCardManagerScreen from './NfcCardManagerScreen'
 
 import type { useStorage } from '../../../hooks/useStorage'
 
@@ -60,8 +60,8 @@ export default function Settings({ storage }: SettingsProps) {
       </div>
 
       <div className='flex-1 px-6 pb-2 overflow-y-auto'>
-        {activeTab === 'whitelist' && <AppList whitelist={storage.whitelist} onSave={storage.saveWhitelist} />}
-        {activeTab === 'nfc' && <NfcCardManager cards={storage.nfcCards} onSave={storage.saveNfcCards} />}
+        {activeTab === 'whitelist' && <AppListScreen whitelist={storage.whitelist} onSave={storage.saveWhitelist} />}
+        {activeTab === 'nfc' && <NfcCardManagerScreen cards={storage.nfcCards} onSave={storage.saveNfcCards} />}
         {activeTab === 'timer' && <TimerSettings config={storage.timerConfig} onSave={storage.saveTimerConfig} />}
       </div>
 

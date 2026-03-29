@@ -34,6 +34,7 @@ export default function NfcCardItem({ uid, name, onRename, onRemove }: NfcCardIt
             <div className='flex gap-2'>
               <input
                 type='text'
+                aria-label='Card name'
                 value={nameInput}
                 onChange={(e) => setNameInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && saveRename()}
