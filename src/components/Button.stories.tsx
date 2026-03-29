@@ -21,39 +21,28 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Primary: Story = {
+export const Default: Story = {
   args: {
-    variant: 'primary',
-    children: 'Continue',
+    children: 'Button',
   },
   play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement)
     await step('Click fires onClick callback', async () => {
-      await userEvent.click(canvas.getByRole('button', { name: 'Continue' }))
+      await userEvent.click(canvas.getByRole('button', { name: 'Button' }))
       await expect(args.onClick).toHaveBeenCalledOnce()
     })
   },
 }
 
-export const Outline: Story = {
-  args: {
-    variant: 'outline',
-    children: 'Open Settings',
-  },
-}
-
-export const Danger: Story = {
-  args: {
-    variant: 'danger',
-    children: 'Unlock with Override',
-  },
-}
-
-export const Ghost: Story = {
-  args: {
-    variant: 'ghost',
-    children: 'Cancel',
-  },
+export const Variants: Story = {
+  render: () => (
+    <div className='flex flex-col items-start gap-4'>
+      <Button variant='primary'>Primary</Button>
+      <Button variant='outline'>Outline</Button>
+      <Button variant='danger'>Danger</Button>
+      <Button variant='ghost'>Ghost</Button>
+    </div>
+  ),
 }
 
 export const Disabled: Story = {

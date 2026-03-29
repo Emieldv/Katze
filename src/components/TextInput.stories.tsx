@@ -35,13 +35,13 @@ export const Default: Story = {
   },
 }
 
-export const Surface: Story = {
-  args: {
-    variant: 'surface',
-    placeholder: 'Enter your emergency code',
-    className: 'font-mono',
-  },
-  globals: {
-    backgrounds: { value: 'surface-light' },
-  },
+export const Variants: Story = {
+  render: () => (
+    <div className='flex flex-col gap-4'>
+      <TextInput placeholder='Default variant' />
+      <div className='bg-surface-light p-4 rounded-xl'>
+        <TextInput variant='surface' placeholder='Surface variant' />
+      </div>
+    </div>
+  ),
 }

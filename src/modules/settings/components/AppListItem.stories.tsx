@@ -8,6 +8,9 @@ const meta = {
   title: 'Components/AppListItem',
   component: AppListItem,
   args: {
+    appName: 'Instagram',
+    packageName: 'com.instagram.android',
+    selected: false,
     onToggle: fn(),
     icon: 'https://placehold.co/40x40/4ade80/white?text=App',
   },
@@ -19,7 +22,7 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Unselected: Story = {
+export const Default: Story = {
   args: {
     appName: 'Instagram',
     packageName: 'com.instagram.android',
@@ -34,12 +37,25 @@ export const Unselected: Story = {
   },
 }
 
-export const Selected: Story = {
-  args: {
-    appName: 'Instagram',
-    packageName: 'com.instagram.android',
-    selected: true,
-  },
+export const Variants: Story = {
+  render: () => (
+    <div className='flex flex-col gap-2'>
+      <AppListItem
+        appName='Instagram'
+        packageName='com.instagram.android'
+        icon='https://placehold.co/40x40/4ade80/white?text=App'
+        selected={false}
+        onToggle={() => {}}
+      />
+      <AppListItem
+        appName='Instagram'
+        packageName='com.instagram.android'
+        icon='https://placehold.co/40x40/4ade80/white?text=App'
+        selected={true}
+        onToggle={() => {}}
+      />
+    </div>
+  ),
 }
 
 export const WithoutIcon: Story = {

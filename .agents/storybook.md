@@ -5,11 +5,40 @@
 - Write stories for **presentational components** (`src/components/`)
 - Do **not** write stories for page-level components (`screens/`) or app-level orchestrators (`App.tsx`) — they are too tightly coupled to hooks, routing, and native plugins
 
-## Story selection
+## Story structure
 
-- Each story should represent a **meaningful visual state** — not a prop variation
-- Good: error vs warning variant (different colors), zero-timer warning (edge case), with/without action button
-- Bad: spinner in 3 sizes (just use a control knob), tab bar with 2 vs 3 tabs (no visual insight)
+Every component's stories must follow this structure:
+
+1. **`Default`** — the component with only its **required props** populated (plus a minimal realistic value). This is the baseline story and should always be first.
+2. **`Variants`** — if the component has **style variants** (e.g., color schemes, visual modes), render all of them in a single story using a custom `render` function. Use a flex container to lay them out.
+3. **Separate stories for functional variants** — any story that tests **behavior** (play functions), **feature flags** (e.g., `disabled`, `fullWidth`, `withIcon`), or **edge cases** (e.g., `ZeroTimer`, `WithoutIcon`) stays as its own story. This keeps interaction tests isolated and easy to debug.
+
+```tsx
+// Example: component with style variants and a functional variant
+export const Default: Story = {
+  args: { content: 'Something went wrong.' },
+}
+
+export const Variants: Story = {
+  render: () => (
+    <div className='flex flex-col gap-4'>
+      <AlertBanner variant='error' content='Error message' />
+      <AlertBanner variant='warning' content='Warning message' />
+      <AlertBanner variant='info' content='Info message' />
+    </div>
+  ),
+}
+
+export const WithAction: Story = {
+  args: { /* ... */ },
+  play: async ({ canvasElement, args, step }) => { /* ... */ },
+}
+```
+
+### What counts as a style variant vs functional variant
+
+- **Style variant** → purely visual difference (colors, sizes, themes) with no behavior change → goes in `Variants`
+- **Functional variant** → changes behavior, has a play function, or tests an edge case → separate story
 
 ## Controls
 
