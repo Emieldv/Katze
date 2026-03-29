@@ -4,6 +4,12 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - 'src/**'
+      - '.storybook/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/storybook.yml'
 
 concurrency:
   group: storybook-${{ github.head_ref }}

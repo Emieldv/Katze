@@ -4,6 +4,13 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - 'src/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig*.json'
+      - 'knip.json'
+      - '.github/workflows/knip.yml'
 
 concurrency:
   group: knip-${{ github.head_ref }}
