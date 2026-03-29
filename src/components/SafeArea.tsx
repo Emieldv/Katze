@@ -5,6 +5,7 @@ type SafeAreaProps = {
   className?: string
 }
 
+/** Full-height viewport container that respects device safe area insets. */
 export default function SafeArea({ children, className = '' }: SafeAreaProps) {
   return (
     <div

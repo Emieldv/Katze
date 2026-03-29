@@ -9,6 +9,7 @@ const sizes = {
   lg: 'w-8 h-8',
 }
 
+/** Animated loading indicator. */
 export default function Spinner({ size = 'md', className = '' }: SpinnerProps) {
   return (
     <div

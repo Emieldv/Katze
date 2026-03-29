@@ -9,6 +9,7 @@ type TabBarProps<T extends string> = {
   onTabChange: (tab: T) => void
 }
 
+/** Generic tab navigation bar with typed tab keys. */
 export default function TabBar<T extends string>({ tabs, activeTab, onTabChange }: TabBarProps<T>) {
   return (
     <div className='flex gap-1 bg-surface-light rounded-xl p-1'>

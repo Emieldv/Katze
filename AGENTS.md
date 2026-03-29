@@ -80,6 +80,29 @@ When working on UI components, always use the `katze-storybook` MCP tools to acc
 
 Remember: A story name might not reflect the property name correctly, so always verify properties through documentation or example stories before using them.
 
+### Component documentation
+
+Autodocs is enabled globally — every component with stories gets a generated doc page. TypeScript types already provide prop names, types, required/optional status, and defaults. JSDoc comments add the human-readable layer on top.
+
+**Always add when creating or editing a component:**
+
+- A **component-level JSDoc** on the default export describing what the component is and when to use it
+- **Prop-level JSDoc** on any prop where the name and type alone don't convey the full meaning
+
+**Skip JSDoc for props that are self-explanatory** from their name and type (e.g. `label: string`, `onChange: (value: number) => void`).
+
+```tsx
+type ButtonProps = {
+  /** Visual style of the button. */
+  variant?: 'primary' | 'outline' | 'danger' | 'ghost'
+  /** Stretches the button to fill its container width. */
+  fullWidth?: boolean
+}
+
+/** Primary action button with multiple visual variants. */
+export default function Button({ variant = 'primary', fullWidth = false }: ButtonProps) {
+```
+
 ### DRY principle
 
 - Before writing any UI markup, check if an existing component already covers the pattern

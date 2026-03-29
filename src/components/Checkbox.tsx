@@ -5,6 +5,7 @@ type CheckboxProps = {
   className?: string
 }
 
+/** Accessible checkbox with an optional label. */
 export default function Checkbox({ checked, onChange, label, className = '' }: CheckboxProps) {
   return (
     <button

@@ -1,6 +1,9 @@
 type AlertBannerProps = {
+  /** Severity level, controls color scheme. */
   variant?: 'error' | 'warning' | 'info'
+  /** Message text displayed inside the banner. */
   content: string
+  /** Optional inline action rendered below the message. */
   action?: {
     label: string
     onClick: () => void
@@ -25,6 +28,7 @@ const variants = {
   },
 }
 
+/** Contextual banner for displaying errors, warnings, or informational messages. */
 export default function AlertBanner({ variant = 'error', content, action }: AlertBannerProps) {
   const styles = variants[variant]
 

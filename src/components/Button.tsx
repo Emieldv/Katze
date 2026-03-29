@@ -3,7 +3,9 @@ import type { ButtonHTMLAttributes } from 'react'
 type ButtonVariant = 'primary' | 'outline' | 'danger' | 'ghost'
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  /** Visual style of the button. */
   variant?: ButtonVariant
+  /** Stretches the button to fill its container width. */
   fullWidth?: boolean
 }
 
@@ -15,6 +17,7 @@ const variants: Record<ButtonVariant, string> = {
   ghost: 'text-gray-400 active:bg-surface-lighter',
 }
 
+/** Primary action button with multiple visual variants. */
 export default function Button({
   variant = 'primary',
   fullWidth = false,

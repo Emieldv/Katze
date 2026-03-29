@@ -3,12 +3,15 @@ import { useState } from 'react'
 import LinkButton from '../../../components/LinkButton'
 
 type NfcCardItemProps = {
+  /** Unique NFC tag identifier. */
   uid: string
+  /** User-assigned display name for the card. */
   name: string
   onRename: (uid: string, name: string) => void
   onRemove: (uid: string) => void
 }
 
+/** Displays a registered NFC card with inline rename and remove actions. */
 export default function NfcCardItem({ uid, name, onRename, onRemove }: NfcCardItemProps) {
   const [editing, setEditing] = useState(false)
   const [nameInput, setNameInput] = useState(name)

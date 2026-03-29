@@ -1,6 +1,7 @@
 import type { InputHTMLAttributes } from 'react'
 
 type TextInputProps = InputHTMLAttributes<HTMLInputElement> & {
+  /** Background style. Use `surface` for inputs rendered on the main surface background. */
   variant?: 'default' | 'surface'
 }
 
@@ -9,6 +10,7 @@ const variants = {
   surface: 'bg-surface',
 }
 
+/** Single-line text input with rounded styling. */
 export default function TextInput({ variant = 'default', className = '', ...props }: TextInputProps) {
   return (
     <input
