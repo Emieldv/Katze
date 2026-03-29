@@ -6,7 +6,7 @@ const config: KnipConfig = {
   // which fails due to missing native lightningcss binary
   vite: false,
   entry: ['src/main.tsx', 'src/test/setup.ts'],
-  ignoreDependencies: ['@tailwindcss/vite', '@vitejs/plugin-react'],
+  ignoreDependencies: ['@tailwindcss/vite', '@vitejs/plugin-react', '@vitest/coverage-v8'],
 }
 
 export default config

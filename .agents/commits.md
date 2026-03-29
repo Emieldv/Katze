@@ -25,6 +25,10 @@ Examples:
 - `feat/13-project-documentation`
 - `fix/42-timer-reset-bug`
 
+## Pull request titles
+
+PR titles **must** follow the same conventional commit format as commit messages (`type(scope): description`). This is enforced by the `amannn/action-semantic-pull-request` GitHub Action and used by Release Please to auto-generate changelogs.
+
 ## Releases
 
-Managed by [Release Please](https://github.com/googleapis/release-please). It reads conventional commits to auto-generate changelogs and version bumps. PR titles are also validated against conventional commit format.
+Managed by [Release Please](https://github.com/googleapis/release-please). It reads conventional commits to auto-generate changelogs and version bumps.
