@@ -41,7 +41,6 @@ Before starting any task:
 
 | File | When to read |
 |------|-------------|
-| [components.md](.agents/components.md) | Creating or modifying UI components |
 | [storybook.md](.agents/storybook.md) | Writing or updating Storybook stories |
 | [storybook-interaction-tests.md](.agents/storybook-interaction-tests.md) | Adding play functions or interaction tests |
 | [testing.md](.agents/testing.md) | Writing or modifying tests |
@@ -55,7 +54,39 @@ Before starting any task:
 | [src/modules/settings/settings.md](src/modules/settings/settings.md) | App whitelist, NFC card management, timer config |
 | [src/modules/setup/nfc-setup.md](src/modules/setup/nfc-setup.md) | Onboarding flow, permissions, NFC registration |
 
-## Rules
+## Component development
 
-- When creating or modifying a presentational component in `src/components/`, always create or update its Storybook story file
-- Follow the DRY principle — check if an existing component covers the pattern before writing UI markup
+When adding or editing components, always create or edit its corresponding Storybook story. This ensures the component is documented and tested in isolation, and provides a reference for how it should be used.
+
+### Storybook MCP
+
+This project uses the Storybook MCP addon (`@storybook/addon-mcp`) to expose component documentation to AI agents. The MCP server is available at `http://localhost:6006/mcp` when Storybook is running (included in `npm run dev`).
+
+**Setup:** If the `katze-storybook` MCP server is not yet configured in your agent, register it:
+
+```bash
+npx mcp-add --type http --url "http://localhost:6006/mcp" --scope project
+```
+
+When working on UI components, always use the `katze-storybook` MCP tools to access Storybook's component and documentation knowledge before answering or taking any action.
+
+- **CRITICAL: Never hallucinate component properties!** Before using ANY property on a component from a design system (including common-sounding ones like `shadow`, etc.), you MUST use the MCP tools to check if the property is actually documented for that component.
+- Query `list-all-documentation` to get a list of all components
+- Query `get-documentation` for that component to see all available properties and examples
+- Only use properties that are explicitly documented or shown in example stories
+- If a property isn't documented, do not assume properties based on naming conventions or common patterns from other libraries. Check back with the user in these cases.
+- Use the `get-storybook-story-instructions` tool to fetch the latest instructions for creating or updating stories. This will ensure you follow current conventions and recommendations.
+- Check your work by running `run-story-tests`.
+
+Remember: A story name might not reflect the property name correctly, so always verify properties through documentation or example stories before using them.
+
+### DRY principle
+
+- Before writing any UI markup, check if an existing component already covers the pattern
+- If the same styling or markup is repeated across files, extract it into a shared component
+- When creating a new component, check the existing codebase for similar patterns and consolidate
+
+### When to extract
+
+- A UI pattern appears in 2+ places — extract it
+- A UI pattern appears once but is a standard primitive (button, input, checkbox) — extract it anyway, it will be reused

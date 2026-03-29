@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "katze-storybook": {
+      "type": "http",
+      "url": "http://localhost:6006/mcp"
+    }
+  }
+}
