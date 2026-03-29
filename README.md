@@ -1,5 +1,7 @@
 # Katze
 
+![Coverage](https://img.shields.io/endpoint?url=https://emieldv.github.io/Katze/coverage/badge.json)
+
 Open-source Android app blocker that uses NFC cards to lock and unlock access to apps. Designed for focus and digital wellbeing.
 
 ## How it works

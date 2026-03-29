@@ -6,4 +6,5 @@ dist
 
 *storybook.log
 storybook-static
+coverage
 .claude/
