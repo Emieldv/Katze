@@ -25,6 +25,7 @@
     "@capacitor/app": "^8.0.1",
     "@capacitor/core": "^8.0.0",
     "@capacitor/preferences": "^8.0.0",
+    "@phosphor-icons/react": "^2.1.10",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.0.0"

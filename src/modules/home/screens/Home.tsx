@@ -1,3 +1,4 @@
+import { Lock, LockOpen } from '@phosphor-icons/react'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -116,27 +117,11 @@ export default function Home({ storage }: HomeProps) {
             storage.locked ? 'bg-primary-600 shadow-lg shadow-primary-900/50' : 'bg-surface-light'
           }`}
         >
-          <svg
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            strokeWidth={1.5}
-            className={`w-16 h-16 ${storage.locked ? 'text-white' : 'text-gray-400'}`}
-          >
-            {storage.locked ? (
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                d='M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z'
-              />
-            ) : (
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                d='M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z'
-              />
-            )}
-          </svg>
+          {storage.locked ? (
+            <Lock className={`w-16 h-16 text-white`} />
+          ) : (
+            <LockOpen className={`w-16 h-16 text-gray-400`} />
+          )}
         </div>
 
         <p className='text-xl font-semibold mb-2'>{storage.locked ? 'Apps Locked' : 'Apps Unlocked'}</p>

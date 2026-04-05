@@ -1,3 +1,5 @@
+import { Check } from '@phosphor-icons/react'
+
 type AppListItemProps = {
   appName: string
   packageName: string
@@ -43,11 +45,7 @@ export default function AppListItem({ appName, packageName, icon, selected, onTo
           selected ? 'bg-primary-600 border-primary-600' : 'border-gray-600'
         }`}
       >
-        {selected && (
-          <svg viewBox='0 0 12 12' className='w-3 h-3 text-white'>
-            <path fill='currentColor' d='M10 3L4.5 8.5 2 6l.7-.7L4.5 7.1 9.3 2.3z' />
-          </svg>
-        )}
+        {selected && <Check className='w-3 h-3 text-white' weight='bold' />}
       </div>
     </div>
   )

@@ -1,3 +1,5 @@
+import { Check } from '@phosphor-icons/react'
+
 type CheckboxProps = {
   checked: boolean
   onChange: (checked: boolean) => void
@@ -17,11 +19,7 @@ export default function Checkbox({ checked, onChange, label, className = '' }: C
           checked ? 'bg-primary-600 border-primary-600' : 'border-gray-600'
         }`}
       >
-        {checked && (
-          <svg viewBox='0 0 12 12' className='w-3 h-3 text-white'>
-            <path fill='currentColor' d='M10 3L4.5 8.5 2 6l.7-.7L4.5 7.1 9.3 2.3z' />
-          </svg>
-        )}
+        {checked && <Check className='w-3 h-3 text-white' weight='bold' />}
       </div>
       {label && <span className='text-sm text-gray-300'>{label}</span>}
     </button>
